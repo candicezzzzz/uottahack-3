@@ -1,7 +1,7 @@
 {
   "muteDuration": 0,
 
-  "openDoor": false,
+  "allowEntrance": false,
 
   "showNotification": true,
   "packageArriveMsg": "A package has arrived!",
