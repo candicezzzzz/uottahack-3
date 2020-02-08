@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utc-8">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script src="js/index.js"></script>
+  </head>
+  <body bgcolor = #e1f4f1>
+    <h2 class = "title">Dashboard But Really Dumb</h2>
+    <form action="shari-smart.ts" method="POST">
+      <label class="container option-text">Mute
+        <input type="checkbox" onclick="update()" id="mute" checked="checked">
+        <span class="checkmark"></span>
+      </label>
+      <div class="custom-select" id="mute-options" style="width:200px;">
+        <select id="duration">
+          <option value="0">Duration:</option>
+          <option value="1">30 seconds</option>
+          <option value="2">1 minute</option>
+          <option value="3">5 minutes</option>
+          <option value="4">15 minutes</option>
+          <option value="5">keep muted</option>
+        </select>
+      </div> 
+      <label class="container option-text">Welcome, Strangers :pp (opens the door when a person approaches)
+        <input type="checkbox">
+        <span class="checkmark"></span>
+      </label>
+      <button type="submit" class="button">Save</button>
+    </form>
+  </body>
+</html>
