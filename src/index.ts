@@ -16,7 +16,7 @@ const client: any = new vision.ImageAnnotatorClient();
 import NodeCam from "node-webcam";
 
 let currentNumBoxes: number = 0;
-
+let muted: boolean = false;
 
 async function getNumBoxes(imageData: string): Promise<number> {
   return new Promise(async (resolve, reject) => {
@@ -90,17 +90,20 @@ NodeCam.create({}).list((availableCams: Array<any>) => {
     );
   });  
   console.log(cams);
+
   //update every 5sec
   // setInterval(() => {
-  //   cams[0].capture("capture", async (err: any, base64: string) => {
-  //     if (err) console.log(err);
-  //     if (base64) {
-  //       // stupid package adds 23 stupid characters at the front
-  //       console.log(await getNumBoxes(base64.substring(23)));
-  //     } else {
-  //       console.log("alsdkfjasdg undefined");
-  //     }
-  //   });
+  //   if (!muted) {
+  //     cams[0].capture("capture", async (err: any, base64: string) => {
+  //       if (err) console.log(err);
+  //       if (base64) {
+  //         // stupid package adds 23 stupid characters at the front
+  //         console.log(await getNumBoxes(base64.substring(23)));
+  //       } else {
+  //         console.log("alsdkfjasdg undefined");
+  //       }
+  //     });
+  //   }
   // }, 5000);
 });
 
@@ -112,13 +115,18 @@ app.get('/', (req: any, res: any) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
+app.get('/*.*', (req: any, res: any) => {
+  res.sendFile(path.join(__dirname, req.url));
+});
+
 app.post('/settings', (req: any, res: any) => {
   console.log(req.body);
+  res.send('Saved');
 });
 
 app.post('/options', (req: any, res: any) => {
-  console.log(req);
   console.log(req.body);
+  res.send('Saved');
 });
 
 const port: number = 3000;
