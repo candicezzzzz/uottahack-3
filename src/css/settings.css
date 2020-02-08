@@ -11,6 +11,10 @@
   font-family: "Comic Sans MS";
 }
 
+.navbar-right {
+  padding-left: 50px;
+}
+
 .navbar-right ul {
   margin: 2px;
   padding: 2px;
@@ -38,7 +42,7 @@
   font-size: 12px;
 }
 
-a {
+.header a {
   color: #bec8d1;
   font-size: 18px;
   text-decoration: none;
