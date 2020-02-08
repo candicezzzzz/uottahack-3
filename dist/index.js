@@ -25,6 +25,7 @@ const client = new vision_1.default.ImageAnnotatorClient();
 // @ts-ignore
 const node_webcam_1 = __importDefault(require("node-webcam"));
 let currentNumBoxes = 0;
+let muted = false;
 function getNumBoxes(imageData) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
@@ -96,27 +97,33 @@ node_webcam_1.default.create({}).list((availableCams) => {
     console.log(cams);
     //update every 5sec
     // setInterval(() => {
-    //   cams[0].capture("capture", async (err: any, base64: string) => {
-    //     if (err) console.log(err);
-    //     if (base64) {
-    //       // stupid package adds 23 stupid characters at the front
-    //       console.log(await getNumBoxes(base64.substring(23)));
-    //     } else {
-    //       console.log("alsdkfjasdg undefined");
-    //     }
-    //   });
+    //   if (!muted) {
+    //     cams[0].capture("capture", async (err: any, base64: string) => {
+    //       if (err) console.log(err);
+    //       if (base64) {
+    //         // stupid package adds 23 stupid characters at the front
+    //         console.log(await getNumBoxes(base64.substring(23)));
+    //       } else {
+    //         console.log("alsdkfjasdg undefined");
+    //       }
+    //     });
+    //   }
     // }, 5000);
 });
 ////////express stuff
 app.get('/', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "index.html"));
 });
+app.get('/*.*', (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, req.url));
+});
 app.post('/settings', (req, res) => {
     console.log(req.body);
+    res.send('Saved');
 });
 app.post('/options', (req, res) => {
-    console.log(req);
     console.log(req.body);
+    res.send('Saved');
 });
 const port = 3000;
 app.listen(port, () => {
