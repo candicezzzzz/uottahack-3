@@ -57,7 +57,7 @@
   color: rgb(0,90,72);
   border: none;
   font-weight: bold;
-  padding: 15px 20px;
+  padding: 16px 32px;
   text-align: center;
   font-size: 17px;
 }
@@ -66,71 +66,46 @@
   background-color: rgb(40,160,145);
 }
 
-.option-text {
-  color: #373b3e;
+.center {
+  text-align: center;
 }
 
-.container {
-  display: block;
-  position: relative;
-  padding-left: 35px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  font-size: 22px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+/*this makes me want to die*/
+.margin-up {
+  margin-top: 75px;
 }
 
-.container input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
+.submission li {
+  margin-bottom: 50px;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-size: 25px;
 }
 
-.checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 25px;
-  width: 25px;
-  background-color: #bcd0dc;
-}
-
-.container:hover input ~ .checkmark {
-  background-color: #97b6c8;
-}
-
-.container input:checked ~ .checkmark {
-  background-color: rgb(90,200,185);
-}
-
-.checkmark:after {
-  content: "";
-  position: absolute;
+#mute-options {
   display: none;
 }
 
-.container input:checked ~ .checkmark:after {
-  display: block;
+form {
+  /* Center the form on the page */
+  margin: 0 auto;
+  width: 400px;
+  /* Form outline */
+  padding: 1em;
+  border: 3px solid #137a7f;
+  border-radius: 1em;
 }
 
-.container .checkmark:after {
-  left: 9px;
-  top: 5px;
-  width: 5px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 body {
   padding-top: 100px;
   margin: 0;
+}
+
+h2 {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
 }

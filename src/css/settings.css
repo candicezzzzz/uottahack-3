@@ -53,17 +53,17 @@
 i want death*/
 
 .form button {
-  background-color: #373b3e; 
+  background-color: rgb(90,200,185);
+  color: rgb(0,90,72);
   border: none;
-  color: #bec8d1;
-  display: inline-block;
-  padding: 15px 32px;
-  font-size: 20px;
+  font-weight: bold;
+  padding: 16px 32px;
   text-align: center;
+  font-size: 17px;
 }
 
 .form button:hover {
-  background-color: #464a4d;
+  background-color: rgb(40,160,145);
 }
 
 .center {
@@ -74,8 +74,12 @@ i want death*/
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
 }
 
-#soundupload, #arrive, #stolen {
+#soundupload{
   display: none;
+}
+
+#arrive, #stolen {
+  display: block;
 }
 
 /* these are really dumb formatters */
@@ -104,6 +108,8 @@ form {
   width: 400px;
   /* Form outline */
   padding: 1em;
+  padding-left: 50px;
+  padding-right: 75px;
   border: 3px solid #137a7f;
   border-radius: 1em;
 }

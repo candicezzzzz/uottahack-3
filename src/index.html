@@ -23,27 +23,41 @@
     </div>
   </nav>
   <body bgcolor = #e1f4f1>
-    <h2 class = "title">Dashboard But Really Dumb</h2>
-    <form action="shari-smart.ts" method="POST">
-      <label class="container option-text">Mute
-        <input type="checkbox" onclick="update()" id="mute" checked="checked">
-        <span class="checkmark"></span>
-      </label>
-      <div class="custom-select" id="mute-options" style="width:200px;">
-        <select id="duration">
-          <option value="0">Duration:</option>
-          <option value="1">30 seconds</option>
-          <option value="2">1 minute</option>
-          <option value="3">5 minutes</option>
-          <option value="4">15 minutes</option>
-          <option value="5">keep muted</option>
-        </select>
-      </div> 
-      <label class="container option-text">Welcome, Strangers :pp (opens the door when a person approaches)
-        <input type="checkbox">
-        <span class="checkmark"></span>
-      </label>
-      <button type="submit" class="button">Save</button>
+    <h2 class= "title center">Dashboard presented by candycane1124</h2>
+    <form class="submission" action="shari-smart" method="POST">
+      <ul>
+        <li>
+          <div class="center">
+            <label for="mute" class="option">Mute</label>
+          </div>
+          <div class="center">
+            <input type="checkbox" onclick="update('mute', 'mute-options')" id="mute" name="mute">
+          </div>
+         <div id="mute-options" style="margin-top: 10px; margin-bottom: 10px;">
+           <div class="center">
+              <select id="duration">
+                <option value="0">Duration:</option>
+                <option value="1">30 seconds</option>
+                <option value="2">1 minute</option>
+                <option value="3">5 minutes</option>
+                <option value="4">15 minutes</option>
+                <option value="5">keep muted</option>
+              </select>
+            </div> 
+          </div>
+        </li>
+        <li>
+          <div class="center">
+            <label for="allow-entrance" class="option">OPEN THE DOOR </label>
+          </div>
+          <div class="center">
+            <input type="checkbox" id="allow-entrance" name="allow-entrance">
+          </div>
+        </li>
+        <div class="center margin-up">
+          <button type="submit" class="button">Save</button>
+        </div>
+      </ul>
     </form>
   </body>
 </html>

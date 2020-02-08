@@ -1,9 +1,9 @@
-function update() {
-  let muteCheckbox = document.getElementById("mute");
-  let muteOptions = document.getElementById("mute-options");
-  if (muteCheckbox.checked == true) {
-    muteOptions.style.display = 'block';
+function update(conditional, display) {
+  let checkbox = document.getElementById(conditional);
+  let newDisplay = document.getElementById(display);
+  if (checkbox.checked == true) {
+    newDisplay.style.display = 'block';
   } else {
-    muteOptions.style.display = 'none';
+    newDisplay.style.display = 'none';
   }
 }
