@@ -3,6 +3,7 @@ require("dotenv-safe").config();
 import express from "express";
 import path from "path";
 import bodyParser from "body-parser";
+
 const util = require("util");
 
 const fs = require('fs');
@@ -25,6 +26,8 @@ const client: any = new vision.ImageAnnotatorClient();
 // @ts-ignore
 import NodeCam from "node-webcam";
 
+const possibleOptions = ['Box', 'Packaged goods', 'Boxed packaged goods'];
+
 let currentNumBoxes: number = 0;
 let muted: boolean = false;
 
@@ -38,7 +41,7 @@ async function getNumBoxes(imageData: string): Promise<number> {
       let numBoxes = 0;
       objects.forEach((object) => {
         console.log(object.name);
-        if (object.name == "Box" || object.name == "Packaged goods") {
+        if (possibleOptions.indexOf(object.name) != -1) {
           ++numBoxes;
         }
       });
@@ -81,6 +84,14 @@ async function getPackageDifference(imageData: string): Promise<number> {
 // test();
 
 
+function onArrive(numPackage: number) {
+  console.log(`Packages: ${numPackage}`);
+}
+
+function onTaken(numPackage: number) {
+  console.log(`Packages taken: ${numPackage}`);
+}
+
 
 let cams: Array<any> = [];
 
@@ -102,20 +113,28 @@ NodeCam.create({}).list((availableCams: Array<any>) => {
   });  
   console.log(cams);
 
-  //update every 5sec
-  // setInterval(() => {
-  //   if (!muted) {
-  //     cams[0].capture("capture", async (err: any, base64: string) => {
-  //       if (err) console.log(err);
-  //       if (base64) {
-  //         // stupid package adds 23 stupid characters at the front
-  //         console.log(await getNumBoxes(base64.substring(23)));
-  //       } else {
-  //         console.log("alsdkfjasdg undefined");
-  //       }
-  //     });
-  //   }
-  // }, 5000);
+  // update every 5sec
+  setInterval(() => {
+    if (!muted) {
+      cams[0].capture("capture", async (err: any, base64: string) => {
+        if (err) console.log(err);
+        if (base64) {
+          // stupid package adds 23 stupid characters at the front
+          // console.log(await getNumBoxes(base64.substring(23)));
+
+          const numPackageDifference = await getPackageDifference(base64.substring(23));
+          if (numPackageDifference > 0) {
+            onArrive(numPackageDifference);
+          } else if (numPackageDifference < 0) {
+            onTaken(-numPackageDifference);
+          }
+
+        } else {
+          console.log("alsdkfjasdg undefined");
+        }
+      });
+    }
+  }, 5000);
 });
 
 
@@ -149,8 +168,6 @@ app.post('/options', (req: any, res: any) => {
         return;
     };
   });
-
-  res.send('Saved');
 });
 
 const port: number = 3000;
