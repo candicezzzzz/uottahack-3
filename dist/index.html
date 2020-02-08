@@ -31,7 +31,8 @@
             <label for="mute" class="option">Mute</label>
           </div>
           <div class="center">
-            <input type="checkbox" onclick="update('mute', 'mute-options')" id="mute" name="mute">
+            <input type="checkbox" onclick="update('mute', 'mute-options')" id="mute" name="mute" value="true">
+            <input type="hidden" onclick="update('mute', 'mute-options')" name="mute" value="false">
           </div>
          <div id="mute-options" style="margin-top: 10px; margin-bottom: 10px;">
            <div class="center">
@@ -48,10 +49,11 @@
         </li>
         <li>
           <div class="center">
-            <label for="allow-entrance" class="option">OPEN THE DOOR </label>
+            <label for="allowEntrance" class="option">OPEN THE DOOR </label>
           </div>
           <div class="center">
-            <input type="checkbox" id="allow-entrance" name="allowEntrance">
+            <input type="checkbox" id="allowEntrance" name="allowEntrance" value="true">
+            <input type="hidden" name="allowEntrance" value="false">
           </div>
         </li>
         <div class="center margin-up">

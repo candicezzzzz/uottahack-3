@@ -3,7 +3,17 @@ require("dotenv-safe").config();
 import express from "express";
 import path from "path";
 import bodyParser from "body-parser";
+const util = require("util");
 
+const fs = require('fs');
+
+let userConfig: any;
+fs.readFile("userconfig.json", (err: any, data: string) => {
+  if (err) console.log(err);
+  userConfig = JSON.parse(data);
+});
+
+// const userConfig = JSON.parse(fs.readFile('userconfig.json'));
 const app: express.Application = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -52,6 +62,7 @@ async function getPackageDifference(imageData: string): Promise<number> {
     }
   });
 }
+
 
 //testing with local files
 // async function test() {
@@ -119,13 +130,26 @@ app.get('/*.*', (req: any, res: any) => {
   res.sendFile(path.join(__dirname, req.url));
 });
 
-app.post('/settings', (req: any, res: any) => {
-  console.log(req.body);
-  res.send('Saved');
-});
-
 app.post('/options', (req: any, res: any) => {
   console.log(req.body);
+  Object.keys(req.body).forEach((key) => {
+    if((req.body[key]==='on') || (req.body[key]==='true') || (Array.isArray(req.body[key]))) {
+      userConfig[key] = true;
+    } else if (req.body[key]==='false') {
+      userConfig[key] = false;
+    } else {
+      userConfig[key] = req.body[key];
+    }
+  });
+  console.log(userConfig);
+
+  fs.writeFile("./userconfig.json", JSON.stringify(userConfig), (err: any) => {
+    if (err) {
+        console.error(err);
+        return;
+    };
+  });
+
   res.send('Saved');
 });
 

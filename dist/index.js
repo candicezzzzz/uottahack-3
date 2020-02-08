@@ -16,6 +16,15 @@ require("dotenv-safe").config();
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const util = require("util");
+const fs = require('fs');
+let userConfig;
+fs.readFile("userconfig.json", (err, data) => {
+    if (err)
+        console.log(err);
+    userConfig = JSON.parse(data);
+});
+// const userConfig = JSON.parse(fs.readFile('userconfig.json'));
 const app = express_1.default();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
@@ -117,12 +126,27 @@ app.get('/', (req, res) => {
 app.get('/*.*', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, req.url));
 });
-app.post('/settings', (req, res) => {
-    console.log(req.body);
-    res.send('Saved');
-});
 app.post('/options', (req, res) => {
     console.log(req.body);
+    Object.keys(req.body).forEach((key) => {
+        if ((req.body[key] === 'on') || (req.body[key] === 'true') || (Array.isArray(req.body[key]))) {
+            userConfig[key] = true;
+        }
+        else if (req.body[key] === 'false') {
+            userConfig[key] = false;
+        }
+        else {
+            userConfig[key] = req.body[key];
+        }
+    });
+    console.log(userConfig);
+    fs.writeFile("./userconfig.json", JSON.stringify(userConfig), (err) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        ;
+    });
     res.send('Saved');
 });
 const port = 3000;

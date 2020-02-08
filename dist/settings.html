@@ -25,29 +25,30 @@
   </nav>
   <body>
     <h1 class="center title">Settings</h1>
-    <form action="/settings" method="POST" class="form">
+    <form action="/options" method="POST" class="form">
       <ul>
         <li>
           <div class="center">
             <label for="notification">Notification</label>
           </div>
           <div class="center">
-            <input type="checkbox" id="notification"  name="notification" onclick="splitter('notification', 'arrive', 'stolen')" checked="true">
+            <input type="checkbox" id="notification"  name="notification" onclick="splitter('notification', 'arrive', 'stolen')" value="true">
+            <input type="hidden" name="notification" value="false">
           </div>
           <div id="arrive">
             <div class="center">
-              <label for="notif-arrive" class="small-label">Message to be sent when a package arrives</label>
+              <label for="notifArrive" class="small-label">Message to be sent when a package arrives</label>
             </div>
             <div class="center">
-              <input type="text" size="50" id="notif-arrive" name="notif-arrive" value="A package has arrived!">
+              <input type="text" size="50" id="notifArrive" name="notifArrive" value="A package has arrived!">
             </div>
           </div>
           <div id="stolen">
             <div class="center">
-              <label for="notif-stolen" class="small-label">Message to be sent when a package is taken</label>
+              <label for="notifStolen" class="small-label">Message to be sent when a package is taken</label>
             </div>
             <div class="center">
-              <input type="text" size="50" id="notif-stolen" name="notif-stolen" value="Dear lord the package is being taken what do we do">
+              <input type="text" size="50" id="notifStolen" name="notifStolen" value="Dear lord the package is being taken what do we do">
             </div>
           </div>
         </li>
@@ -56,7 +57,8 @@
             <label for="soundfx">Should Sound Effect play?</label>
           </div>
           <div class="center">
-            <input type="checkbox" id="soundfx" name="soundfx" onclick="update('soundfx', 'soundupload')">
+            <input type="checkbox" id="soundfx" name="soundfx" onclick="update('soundfx', 'soundupload')" value="true">
+            <input type="hidden" name="soundfx" value="false">
           </div>
           <div id="soundupload">
             <div class="center">
@@ -69,10 +71,11 @@
         </li>
         <li>
           <div class="center">
-            <label for="take-picture">Take a picture (if package taken)</label>
+            <label for="takePicture">Take a picture (if package taken)</label>
           </div>
           <div class="center">
-            <input type="checkbox" id="take-picture"  name="take-picture" checked="true">
+            <input type="checkbox" id="takePicture"  name="takePicture" value="true">
+            <input type="hidden" name="takePicture" value="false">
           </div>
         </li>
         <li>
