@@ -1,0 +1,23 @@
+{
+  "name": "uottahack-3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@google-cloud/vision": "^1.8.0",
+    "dotenv-safe": "^8.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/candicezzzzz/uottahack-3.git"
+  },
+  "author": "Kevin Qiao, Shari Sun, Joseph Wang, Candicezzzzz",
+  "bugs": {
+    "url": "https://github.com/candicezzzzz/uottahack-3/issues"
+  },
+  "homepage": "https://github.com/candicezzzzz/uottahack-3#readme"
+}
