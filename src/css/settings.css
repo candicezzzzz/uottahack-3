@@ -34,6 +34,10 @@
   background-color: #118a90;
 }
 
+.small-label {
+  font-size: 12px;
+}
+
 a {
   color: #bec8d1;
   font-size: 18px;
@@ -63,7 +67,11 @@ i want death*/
 }
 
 .title {
-  font-family: ;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+#soundupload, #arrive, #stolen {
+  display: none;
 }
 
 /* these are really dumb formatters */
@@ -83,11 +91,14 @@ i want death*/
 body {
   background-color: #e1f4f1;
   padding-top: 100px;
+  margin: 0;
 }
 
 form {
+  /* Center the form on the page */
   margin: 0 auto;
   width: 400px;
+  /* Form outline */
   padding: 1em;
   border: 3px solid #137a7f;
   border-radius: 1em;
@@ -110,11 +121,14 @@ form li + li {
 }
 
 label {
+  /* Uniform size & alignment */
   display: inline-block;
   text-align: right;
 }
 
 button {
+  /* This extra margin represent roughly the same space as the space
+     between the labels and their text fields */
   margin-left: .5em;
 }
 

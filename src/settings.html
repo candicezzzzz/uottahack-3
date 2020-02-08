@@ -4,19 +4,20 @@
     <meta charset="utf-8">
     <title>chair null</title>
     <link rel="stylesheet" type="text/css" href="css/settings.css">
+    <script src="js/settings.js"></script>
   </head>
   <nav class="nav header">
     <div>
       <nav class="navbar-right">
         <ul class="nav-options">
           <li class="nav-option">
-            <a href="index.html">Home</a>
+            <a href="/index.html">Home</a>
           </li>
           <li class="nav-option">
-            <a href="about.html">About</a>
+            <a href="/about.html">About</a>
           </li>
           <li class="nav-option">
-            <a href="settings.html">Settings</a>
+            <a href="/settings.html">Settings</a>
           </li>
         </ul>
       </nav>
@@ -24,23 +25,47 @@
   </nav>
   <body>
     <h1 class="center title">Settings</h1>
-    <form action="shari-death.ts" method="POST" class="form">
+    <form action="/shari-death" method="POST" class="form">
       <ul>
         <li>
           <div class="center">
             <label for="notification">Notification</label>
           </div>
           <div class="center">
-            <input type="checkbox" id="notification"  name="notification">
+            <input type="checkbox" id="notification"  name="notification" onclick="splitter('notification', 'arrive', 'stolen')">
+          </div>
+          <div id="arrive">
+            <div class="center">
+              <label for="notif-arrive" class="small-label">Message to be sent when a package arrives</label>
+            </div>
+            <div class="center">
+              <input type="text" id="notif-arrive" name="notif-arrive">
+            </div>
+          </div>
+          <div id="stolen">
+            <div class="center">
+              <label for="notif-stolen" class="small-label">Message to be sent when a package is taken</label>
+            </div>
+            <div class="center">
+              <input type="text" id="notif-stolen" name="notif-stolen">
+            </div>
           </div>
         </li>
         <li>
           <div class="center">
-            <label for="sound">Sound Effect to play</label>
-            <p class="small-margin"> Leave empty if no sound effect</p>
+            <label for="soundfx">Should Sound Effect play?</label>
           </div>
           <div class="center">
-            <input type="file" id="sound" accept="audio/*" class="margin-left">
+            <input type="checkbox" id="soundfx" name="soundfx" onclick="update('soundfx', 'soundupload')">
+          </div>
+          <div id="soundupload">
+            <div class="center">
+              <label for="sound">Sound Effect to play</label>
+              <p class="small-margin"> Leave empty if no sound effect</p>
+            </div>
+            <div class="center">
+              <input type="file" id="sound" accept="audio/*" class="margin-left">
+            </div>
           </div>
         </li>
         <li>
