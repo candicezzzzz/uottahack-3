@@ -4,3 +4,4 @@ node_modules/
 uOttoKey.json
 boxes/
 capture.jpg
+*.map

@@ -115,7 +115,6 @@ app.get('/', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "index.html"));
 });
 app.get('/*.*', (req, res) => {
-    console.log(req.url);
     res.sendFile(path_1.default.join(__dirname, req.url));
 });
 app.post('/settings', (req, res) => {
