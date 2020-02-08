@@ -1,7 +1,9 @@
 function update() {
-  if (document.getElementById("mute").selected == false) {
-    document.getElementById("mute-options").style.display = "none";
+  let muteCheckbox = document.getElementById("mute");
+  let muteOptions = document.getElementById("mute-options");
+  if (muteCheckbox.checked == true) {
+    muteOptions.style.display = 'block';
   } else {
-    document.getElementById("mute-options").style.display = "block";
+    muteOptions.style.display = 'none';
   }
 }
