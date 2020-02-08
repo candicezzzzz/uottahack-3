@@ -20,16 +20,14 @@ async function getNumBoxes(imageData: string): Promise<number> {
       const [results] = await client.objectLocalization({
         image: { content: imageData }
       });
-      const [objects] = results.localizedObjectAnnotations;
+      const objects: Array<any> = results.localizedObjectAnnotations;
       let numBoxes = 0;
-      for (let key in objects) {
-        if (key === "name") {
-          console.log(objects[key]);
-          if (objects[key] === "Box" || objects[key] === "Packaged goods") {
-            ++numBoxes;
-          }
+      objects.forEach((object) => {
+        console.log(object.name);
+        if (object.name == "Box" || object.name == "Packaged goods") {
+          ++numBoxes;
         }
-      }
+      });
       resolve(numBoxes);
     } catch (err) {
       console.log(err);
