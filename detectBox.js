@@ -1,14 +1,19 @@
-// Imports the Google Cloud client libraries
 require('dotenv-safe').config();
 const vision = require('@google-cloud/vision');
+const express = require('express');
+const app = express();
+
 // const fs = require('fs');
 // const util = require('util');
-
 // const getAll = util.promisify(fs.readdir);
 const client = new vision.ImageAnnotatorClient();
 
+app.use(express.json());
 
+let numBoxes = 0;
+let imageData = 'sldfjsdklfj';
 
+//get the number of boxes
 async function getNumBoxes(imageData) {
   return new Promise(async(resolve, reject) => {
     const request = {
@@ -31,11 +36,21 @@ async function getNumBoxes(imageData) {
       reject(err);
     }
   });
-
 }
 
+//get the package difference
+async function packageDifference(imageData) {
+  try {
+    const newNumBoxes = await getNumBoxes(imageData);
+    const difference = newNumBoxes - numBoxes;
+    numBoxes = newNumBoxes;
+    return difference
+  } catch (err) {
+    console.log(err);
+  } 
+}
 
-
+//testing with local files
 // async function test() {
 //   const dirName = 'boxes/';
 //   const files = await getAll(dirName);
@@ -51,30 +66,7 @@ async function getNumBoxes(imageData) {
 // }
 // test();
 
-
-// Creates a client
-// async function test(file) {
-
-//   const dirName = 'boxes/';
-//   const fileNames = await getAll(dirName);
-
-//   for (let filename of fileNames) {
-//     console.log(filename + ': ');
-//     const request = {
-//       image: {content: filename},
-//     };
-    
-//     const [result] = await client.objectLocalization(request);
-//     const objects = result.localizedObjectAnnotations;
-//     objects.forEach(object => {
-//       console.log(`Name: ${object.name}`);
-//       console.log(`Confidence: ${object.score}`);
-//       const vertices = object.boundingPoly.normalizedVertices;
-//       vertices.forEach(v => console.log(`x: ${v.x}, y:${v.y}`));
-//       console.log();
-//     });
-//   }
-  
-// }
-
-// test();
+const port = 3000;
+app.listen(port, () => {
+  console.log(`listening on port ${port}`);
+})
