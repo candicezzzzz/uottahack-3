@@ -1,14 +1,10 @@
 {
   "muteDuration": 0,
-
   "allowEntrance": false,
-
   "showNotification": true,
   "packageArriveMsg": "A package has arrived!",
   "packageTakenMsg": "Dear lord the package is being taken what do we do",
-
   "playSound": false,
   "soundPath": "",
-
   "takePicture": true
 }
