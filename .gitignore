@@ -1,6 +1,5 @@
 node_modules/
 .vscode/
-dist/
 .env
 uOttoKey.json
 boxes/

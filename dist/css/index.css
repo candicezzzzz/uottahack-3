@@ -48,54 +48,41 @@
   text-decoration: none;
 }
 
-/*here is the body and stuff
-
-i want death*/
-
-.form button {
-  background-color: #373b3e; 
-  border: none;
-  color: #bec8d1;
-  display: inline-block;
-  padding: 15px 32px;
-  font-size: 20px;
-  text-align: center;
+.title {
+  color: #373b3e;
 }
 
-.form button:hover {
-  background-color: #464a4d;
+.button {
+  background-color: rgb(90,200,185);
+  color: rgb(0,90,72);
+  border: none;
+  font-weight: bold;
+  padding: 16px 32px;
+  text-align: center;
+  font-size: 17px;
+}
+
+.button:hover {
+  background-color: rgb(40,160,145);
 }
 
 .center {
   text-align: center;
 }
 
-.title {
-  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
-}
-
-#soundupload, #arrive, #stolen {
-  display: none;
-}
-
-/* these are really dumb formatters */
+/*this makes me want to die*/
 .margin-up {
   margin-top: 75px;
 }
 
-.margin-left{
-  margin-left: 75px;
+.submission li {
+  margin-bottom: 50px;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-size: 25px;
 }
 
-.small-margin{
-  margin: 2px;
-}
-
-/* default stuff lol*/
-body {
-  background-color: #e1f4f1;
-  padding-top: 100px;
-  margin: 0;
+#mute-options {
+  display: none;
 }
 
 form {
@@ -108,36 +95,17 @@ form {
   border-radius: 1em;
 }
 
-label {
-  display: inline-block;
-  text-align: right;
-  font-weight: bold;
-}
-
 ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-form li + li {
-  margin-top: 20px;
-}
-
-label {
-  /* Uniform size & alignment */
-  display: inline-block;
-  text-align: right;
-}
-
-button {
-  /* This extra margin represent roughly the same space as the space
-     between the labels and their text fields */
-  margin-left: .5em;
-}
-
-p {
-  font-size: 12px;
-  padding: 0;
+body {
+  padding-top: 100px;
   margin: 0;
+}
+
+h2 {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
 }

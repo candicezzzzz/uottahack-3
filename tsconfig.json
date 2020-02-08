@@ -66,6 +66,6 @@
     "skipLibCheck": true,
   },
   "include": [
-    "src/**/*"
+    "src/**/*", "dist/js"
   ]
 }
