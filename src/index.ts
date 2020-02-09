@@ -15,6 +15,13 @@ fs.readFile("userconfig.json", (err: any, data: string) => {
 });
 
 // const userConfig = JSON.parse(fs.readFile('userconfig.json'));
+
+// process the forms passed
+const formidable: any =  require("formidable");
+
+// used for music
+// const neko = require('sound-play');
+
 const app: express.Application = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -92,6 +99,14 @@ function onTaken(numPackage: number) {
   console.log(`Packages taken: ${numPackage}`);
 }
 
+// async function playSound(filePath: string) {
+//   try {
+//     await neko.play(filePath);
+//   } catch(error) {
+//     throw error;
+//   }
+// }
+
 
 let cams: Array<any> = [];
 
@@ -114,27 +129,27 @@ NodeCam.create({}).list((availableCams: Array<any>) => {
   console.log(cams);
 
   // update every 5sec
-  setInterval(() => {
-    if (!muted) {
-      cams[0].capture("capture", async (err: any, base64: string) => {
-        if (err) console.log(err);
-        if (base64) {
-          // stupid package adds 23 stupid characters at the front
-          // console.log(await getNumBoxes(base64.substring(23)));
+  // setInterval(() => {
+  //   if (!muted) {
+  //     cams[0].capture("capture", async (err: any, base64: string) => {
+  //       if (err) console.log(err);
+  //       if (base64) {
+  //         // stupid package adds 23 stupid characters at the front
+  //         // console.log(await getNumBoxes(base64.substring(23)));
 
-          const numPackageDifference = await getPackageDifference(base64.substring(23));
-          if (numPackageDifference > 0) {
-            onArrive(numPackageDifference);
-          } else if (numPackageDifference < 0) {
-            onTaken(-numPackageDifference);
-          }
+  //         const numPackageDifference = await getPackageDifference(base64.substring(23));
+  //         if (numPackageDifference > 0) {
+  //           onArrive(numPackageDifference);
+  //         } else if (numPackageDifference < 0) {
+  //           onTaken(-numPackageDifference);
+  //         }
 
-        } else {
-          console.log("alsdkfjasdg undefined");
-        }
-      });
-    }
-  }, 5000);
+  //       } else {
+  //         console.log("alsdkfjasdg undefined");
+  //       }
+  //     });
+  //   }
+  // }, 5000);
 });
 
 
@@ -152,7 +167,7 @@ app.get('/*.*', (req: any, res: any) => {
 app.post('/options', (req: any, res: any) => {
   console.log(req.body);
   Object.keys(req.body).forEach((key) => {
-    if((req.body[key]==='on') || (req.body[key]==='true') || (Array.isArray(req.body[key]))) {
+    if((req.body[key] === 'on') || (req.body[key] === 'true') || (Array.isArray(req.body[key]))) {
       userConfig[key] = true;
     } else if (req.body[key]==='false') {
       userConfig[key] = false;
@@ -168,6 +183,38 @@ app.post('/options', (req: any, res: any) => {
         return;
     };
   });
+});
+  
+app.post('/settings', (req: any, res: any) => {
+  let form: any  = new formidable.IncomingForm;
+  form.parse(req);
+
+  form.on('field', (name: any, field: any) => {
+    if((field ==='on') || (field === 'true')) {
+      userConfig[name] = true;
+    } else if (field === 'false') {
+      userConfig[name] = false;
+    } else {
+      userConfig[name] = field;
+    }
+
+    console.log(name, field);
+  });
+
+  form.on('file', (name: any, file: any) => {
+    userConfig[name] = file["path"];
+    console.log(name, file);
+  });
+  
+  form.on('error', (err: any) => {
+    throw err;
+  });
+  
+  form.on('end', () => {
+    res.end();
+  });
+  
+  res.send('Saved');
 });
 
 const port: number = 3000;

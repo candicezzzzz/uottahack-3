@@ -25,6 +25,10 @@ fs.readFile("userconfig.json", (err, data) => {
     userConfig = JSON.parse(data);
 });
 // const userConfig = JSON.parse(fs.readFile('userconfig.json'));
+// process the forms passed
+const formidable = require("formidable");
+// used for music
+const neko = require('sound-play');
 const app = express_1.default();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
@@ -33,6 +37,7 @@ const vision_1 = __importDefault(require("@google-cloud/vision"));
 const client = new vision_1.default.ImageAnnotatorClient();
 // @ts-ignore
 const node_webcam_1 = __importDefault(require("node-webcam"));
+const possibleOptions = ['Box', 'Packaged goods', 'Boxed packaged goods'];
 let currentNumBoxes = 0;
 let muted = false;
 function getNumBoxes(imageData) {
@@ -46,7 +51,7 @@ function getNumBoxes(imageData) {
                 let numBoxes = 0;
                 objects.forEach((object) => {
                     console.log(object.name);
-                    if (object.name == "Box" || object.name == "Packaged goods") {
+                    if (possibleOptions.indexOf(object.name) != -1) {
                         ++numBoxes;
                     }
                 });
@@ -94,6 +99,16 @@ function onArrive(numPackage) {
 function onTaken(numPackage) {
     console.log(`Packages taken: ${numPackage}`);
 }
+function playSound(filePath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield neko.play(filePath);
+        }
+        catch (error) {
+            throw error;
+        }
+    });
+}
 let cams = [];
 node_webcam_1.default.create({}).list((availableCams) => {
     availableCams.forEach((element) => {
@@ -111,28 +126,25 @@ node_webcam_1.default.create({}).list((availableCams) => {
     });
     console.log(cams);
     // update every 5sec
-    setInterval(() => {
-        if (!muted) {
-            cams[0].capture("capture", (err, base64) => __awaiter(void 0, void 0, void 0, function* () {
-                if (err)
-                    console.log(err);
-                if (base64) {
-                    // stupid package adds 23 stupid characters at the front
-                    // console.log(await getNumBoxes(base64.substring(23)));
-                    const numPackageDifference = yield getPackageDifference(base64.substring(23));
-                    if (numPackageDifference > 0) {
-                        onArrive(numPackageDifference);
-                    }
-                    else if (numPackageDifference < 0) {
-                        onTaken(-numPackageDifference);
-                    }
-                }
-                else {
-                    console.log("alsdkfjasdg undefined");
-                }
-            }));
-        }
-    }, 5000);
+    // setInterval(() => {
+    //   if (!muted) {
+    //     cams[0].capture("capture", async (err: any, base64: string) => {
+    //       if (err) console.log(err);
+    //       if (base64) {
+    //         // stupid package adds 23 stupid characters at the front
+    //         // console.log(await getNumBoxes(base64.substring(23)));
+    //         const numPackageDifference = await getPackageDifference(base64.substring(23));
+    //         if (numPackageDifference > 0) {
+    //           onArrive(numPackageDifference);
+    //         } else if (numPackageDifference < 0) {
+    //           onTaken(-numPackageDifference);
+    //         }
+    //       } else {
+    //         console.log("alsdkfjasdg undefined");
+    //       }
+    //     });
+    //   }
+    // }, 5000);
 });
 ////////express stuff
 app.get('/', (req, res) => {
@@ -155,12 +167,40 @@ app.post('/options', (req, res) => {
         }
     });
     console.log(userConfig);
+    playSound(userConfig["soundPath"]);
+    ``;
     fs.writeFile("./userconfig.json", JSON.stringify(userConfig), (err) => {
         if (err) {
             console.error(err);
             return;
         }
         ;
+    });
+});
+app.post('/settings', (req, res) => {
+    let form = new formidable.IncomingForm;
+    form.parse(req);
+    form.on('field', (name, field) => {
+        if ((field === 'on') || (field === 'true')) {
+            userConfig[name] = true;
+        }
+        else if (field === 'false') {
+            userConfig[name] = false;
+        }
+        else {
+            userConfig[name] = field;
+        }
+        console.log(name, field);
+    });
+    form.on('file', (name, file) => {
+        userConfig[name] = file["path"];
+        console.log(name, file);
+    });
+    form.on('error', (err) => {
+        throw err;
+    });
+    form.on('end', () => {
+        res.end();
     });
     res.send('Saved');
 });
