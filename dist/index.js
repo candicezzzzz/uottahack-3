@@ -27,8 +27,8 @@ fs_1.default.readFile("userconfig.json", (err, data) => {
 // const userConfig = JSON.parse(fs.readFile('userconfig.json'));
 // process the forms passed
 const formidable = require("formidable");
-// used for music (mplayer must be a system environment variable)
-const neko = require("play-sound")({ player: "mplayer" });
+// used for music
+// const neko = require('sound-play');
 const app = express_1.default();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
@@ -97,31 +97,27 @@ function getPackageDifference(imageData) {
 //   }
 // }
 // test();
-function playSound(filePath) {
-    neko.play(filePath, (err) => {
-        if (err)
-            console.log(`${err}`);
-    });
-}
-let cams = [];
 function onArrive(numPackage) {
     console.log(`Packages: ${numPackage}`);
 }
 function onTaken(numPackage) {
     let date = new Date().toLocaleString().replace(/\//g, "_").replace(/ /g, "").replace(/:/g, "-");
-    let kms = ".\\pictures_taken\\person_";
-    console.log(date);
-    cams[0].capture(kms + date, (err, base64) => __awaiter(this, void 0, void 0, function* () {
+    cams[0].capture(".\\pictures_taken\\person_" + date + ".jpg", (err, base64) => __awaiter(this, void 0, void 0, function* () {
         if (err)
             console.log(err);
         else
             console.log('picture captured');
     }));
-    if (userConfig["soundfx"]) {
-        playSound(userConfig["soundPath"]);
-    }
     console.log(`Packages taken: ${numPackage}`);
 }
+// async function playSound(filePath: string) {
+//   try {
+//     await neko.play(filePath);
+//   } catch(error) {
+//     throw error;
+//   }
+// }
+let cams = [];
 node_webcam_1.default.create({}).list((availableCams) => {
     availableCams.forEach((element) => {
         cams.push(node_webcam_1.default.create({
@@ -138,27 +134,24 @@ node_webcam_1.default.create({}).list((availableCams) => {
     });
     console.log(cams);
     // update every 5sec
-    setInterval(() => {
-        if (!userConfig.mute) {
-            cams[1].capture("capture", (err, base64) => __awaiter(void 0, void 0, void 0, function* () {
-                if (err)
-                    console.log(err);
-                if (base64) {
-                    // stupid package adds 23 stupid characters at the front
-                    const numPackageDifference = yield getPackageDifference(base64.substring(23));
-                    if (numPackageDifference > 0) {
-                        onArrive(numPackageDifference);
-                    }
-                    else if (numPackageDifference < 0) {
-                        onTaken(-numPackageDifference);
-                    }
-                }
-                else {
-                    console.log("alsdkfjasdg undefined");
-                }
-            }));
-        }
-    }, 5000);
+    // setInterval(() => {
+    //   if (!userConfig.mute) {
+    //     cams[1].capture("capture", async (err: any, base64: string) => {
+    //       if (err) console.log(err);
+    //       if (base64) {
+    //         // stupid package adds 23 stupid characters at the front
+    //         const numPackageDifference = await getPackageDifference(base64.substring(23));
+    //         if (numPackageDifference > 0) {
+    //           onArrive(numPackageDifference);
+    //         } else if (numPackageDifference < 0) {
+    //           onTaken(-numPackageDifference);
+    //         }
+    //       } else {
+    //         console.log("alsdkfjasdg undefined");
+    //       }
+    //     });
+    //   }
+    // }, 5000);
 });
 ////////express stuff
 app.get('/', (req, res) => {
@@ -168,8 +161,6 @@ app.get('/*.*', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, req.url));
 });
 app.post('/options', (req, res) => {
-    if (userConfig["soundfx"])
-        playSound(userConfig["soundPath"]);
     console.log(req.body);
     Object.keys(req.body).forEach(key => {
         userConfig[key] = req.body[key];
@@ -185,6 +176,27 @@ app.post('/options', (req, res) => {
             console.log(err);
     });
     res.send({ message: 'success' });
+});
+app.get("/images", (req, res) => {
+    let cancerousStr = "<html><body><h1>asdf</h1>";
+    console.log("shootme");
+    fs_1.default.readdir("./pictures_taken", (err, files) => {
+        console.log(files);
+        console.log(files.length);
+        if (err)
+            console.log(err);
+        if (files.length == 0) {
+            cancerousStr += "<h1>empty folder</h1>";
+            console.log(cancerousStr);
+        }
+        else {
+            files.forEach((file) => {
+                cancerousStr += "<img src=" + file.toString() + ">";
+            });
+        }
+        cancerousStr += "</body></html>";
+        res.send(cancerousStr);
+    });
 });
 app.post('/settings', (req, res) => {
     let form = new formidable.IncomingForm;

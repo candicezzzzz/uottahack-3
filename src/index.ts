@@ -137,26 +137,26 @@ NodeCam.create({}).list((availableCams: Array<any>) => {
   console.log(cams);
 
   // update every 5sec
-  setInterval(() => {
-    if (!userConfig.mute) {
-      cams[1].capture("capture", async (err: any, base64: string) => {
-        if (err) console.log(err);
-        if (base64) {
-          // stupid package adds 23 stupid characters at the front
+  // setInterval(() => {
+  //   if (!userConfig.mute) {
+  //     cams[1].capture("capture", async (err: any, base64: string) => {
+  //       if (err) console.log(err);
+  //       if (base64) {
+  //         // stupid package adds 23 stupid characters at the front
 
-          const numPackageDifference = await getPackageDifference(base64.substring(23));
-          if (numPackageDifference > 0) {
-            onArrive(numPackageDifference);
-          } else if (numPackageDifference < 0) {
-            onTaken(-numPackageDifference);
-          }
+  //         const numPackageDifference = await getPackageDifference(base64.substring(23));
+  //         if (numPackageDifference > 0) {
+  //           onArrive(numPackageDifference);
+  //         } else if (numPackageDifference < 0) {
+  //           onTaken(-numPackageDifference);
+  //         }
 
-        } else {
-          console.log("alsdkfjasdg undefined");
-        }
-      });
-    }
-  }, 5000);
+  //       } else {
+  //         console.log("alsdkfjasdg undefined");
+  //       }
+  //     });
+  //   }
+  // }, 5000);
 });
 
 
@@ -189,6 +189,27 @@ app.post('/options', (req: any, res: any) => {
     if (err) console.log(err);
   });
   res.send({message: 'success'});
+});
+
+app.get("/images", (req:any, res:any) => {
+  let cancerousStr:string = "<html><body><h1>asdf</h1>";
+  console.log("shootme");
+  fs.readdir("./pictures_taken", (err:any, files:string[]) => {
+    console.log(files);
+    console.log(files.length);
+    if (err) console.log(err);
+    if (files.length == 0) {
+      cancerousStr += "<h1>empty folder</h1>";
+      console.log(cancerousStr);
+    } else {
+      files.forEach((file:string) => {
+        cancerousStr += "<img src=" + file.toString() + ">";
+      });
+    }
+    cancerousStr += "</body></html>";
+    res.send(cancerousStr);
+  });
+  
 });
   
 app.post('/settings', (req: any, res: any) => {
