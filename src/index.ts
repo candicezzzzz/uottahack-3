@@ -98,9 +98,11 @@ function onArrive(numPackage: number) {
 }
 
 function onTaken(numPackage: number) {
-  cams[0].capture("person", async (err: any, base64: string) => {
-    if (err) console.log(err);
-
+  let date:string = new Date().toLocaleString().replace(/\//g, "_").replace(/ /g, "").replace(/:/g, "-");
+  cams[0].capture(".\\pictures_taken\\person_" + date + ".jpg",
+    async (err: any, base64: string) => {
+      if (err) console.log(err);
+      else console.log('picture captured');
   });
   console.log(`Packages taken: ${numPackage}`);
 }
@@ -135,27 +137,26 @@ NodeCam.create({}).list((availableCams: Array<any>) => {
   console.log(cams);
 
   // update every 5sec
-  // setInterval(() => {
-  //   if (!userConfig.mute) {
-  //     cams[1].capture("capture", async (err: any, base64: string) => {
-  //       if (err) console.log(err);
-  //       if (base64) {
-  //         // stupid package adds 23 stupid characters at the front
-  //         // console.log(await getNumBoxes(base64.substring(23)));
+  setInterval(() => {
+    if (!userConfig.mute) {
+      cams[1].capture("capture", async (err: any, base64: string) => {
+        if (err) console.log(err);
+        if (base64) {
+          // stupid package adds 23 stupid characters at the front
 
-  //         const numPackageDifference = await getPackageDifference(base64.substring(23));
-  //         if (numPackageDifference > 0) {
-  //           onArrive(numPackageDifference);
-  //         } else if (numPackageDifference < 0) {
-  //           onTaken(-numPackageDifference);
-  //         }
+          const numPackageDifference = await getPackageDifference(base64.substring(23));
+          if (numPackageDifference > 0) {
+            onArrive(numPackageDifference);
+          } else if (numPackageDifference < 0) {
+            onTaken(-numPackageDifference);
+          }
 
-  //       } else {
-  //         console.log("alsdkfjasdg undefined");
-  //       }
-  //     });
-  //   }
-  // }, 5000);
+        } else {
+          console.log("alsdkfjasdg undefined");
+        }
+      });
+    }
+  }, 5000);
 });
 
 

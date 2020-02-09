@@ -108,9 +108,14 @@ function onArrive(numPackage) {
     console.log(`Packages: ${numPackage}`);
 }
 function onTaken(numPackage) {
-    cams[0].capture("person", (err, base64) => __awaiter(this, void 0, void 0, function* () {
+    let date = new Date().toLocaleString().replace(/\//g, "_").replace(/ /g, "").replace(/:/g, "-");
+    let kms = ".\\pictures_taken\\person_";
+    console.log(date);
+    cams[0].capture(kms + date, (err, base64) => __awaiter(this, void 0, void 0, function* () {
         if (err)
             console.log(err);
+        else
+            console.log('picture captured');
     }));
     if (userConfig["soundfx"]) {
         playSound(userConfig["soundPath"]);
@@ -133,25 +138,27 @@ node_webcam_1.default.create({}).list((availableCams) => {
     });
     console.log(cams);
     // update every 5sec
-    // setInterval(() => {
-    //   if (!userConfig.mute) {
-    //     cams[1].capture("capture", async (err: any, base64: string) => {
-    //       if (err) console.log(err);
-    //       if (base64) {
-    //         // stupid package adds 23 stupid characters at the front
-    //         // console.log(await getNumBoxes(base64.substring(23)));
-    //         const numPackageDifference = await getPackageDifference(base64.substring(23));
-    //         if (numPackageDifference > 0) {
-    //           onArrive(numPackageDifference);
-    //         } else if (numPackageDifference < 0) {
-    //           onTaken(-numPackageDifference);
-    //         }
-    //       } else {
-    //         console.log("alsdkfjasdg undefined");
-    //       }
-    //     });
-    //   }
-    // }, 5000);
+    setInterval(() => {
+        if (!userConfig.mute) {
+            cams[1].capture("capture", (err, base64) => __awaiter(void 0, void 0, void 0, function* () {
+                if (err)
+                    console.log(err);
+                if (base64) {
+                    // stupid package adds 23 stupid characters at the front
+                    const numPackageDifference = yield getPackageDifference(base64.substring(23));
+                    if (numPackageDifference > 0) {
+                        onArrive(numPackageDifference);
+                    }
+                    else if (numPackageDifference < 0) {
+                        onTaken(-numPackageDifference);
+                    }
+                }
+                else {
+                    console.log("alsdkfjasdg undefined");
+                }
+            }));
+        }
+    }, 5000);
 });
 ////////express stuff
 app.get('/', (req, res) => {
