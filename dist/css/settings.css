@@ -38,6 +38,11 @@
   background-color: #118a90;
 }
 
+.button:hover {
+  background-color: #118a90;
+  cursor: pointer;
+}
+
 .small-label {
   font-size: 12px;
 }

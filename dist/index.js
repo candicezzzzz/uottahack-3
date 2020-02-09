@@ -11,26 +11,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv-safe").config();
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const body_parser_1 = __importDefault(require("body-parser"));
-// import * as admin from "firebase-admin";
-// admin.initializeApp({
-//   credential: admin.credential.cert("./uOttoFirebaseKey.json")
-// });
-// import util from "util";
+const admin = __importStar(require("firebase-admin"));
+admin.initializeApp({
+    credential: admin.credential.cert("./uOttoFirebaseKey.json")
+});
 const fs_1 = __importDefault(require("fs"));
-// const fin = util.promisify(fs.readFile);
-// const fout = util.promisify(fs.writeFile);
 let userConfig;
 fs_1.default.readFile("userconfig.json", (err, data) => {
     if (err)
         console.log(err);
     userConfig = JSON.parse(data);
 });
-// const userConfig = JSON.parse(fs.readFile('userconfig.json'));
 // process the forms passed
 const formidable = require("formidable");
 // used for music (mplayer must be a system environment variable)
@@ -50,17 +53,17 @@ const possibleOptions = [
     "Shipping box"
 ];
 let currentNumBoxes = 0;
-// function sendNotification(title: string, body: string) {
-//   admin.messaging().send({
-//     notification: {
-//       title: title,
-//       body: body
-//     },
-//     token: process.env.KEVINS_PHONE_TOKEN_LOL_TEST!
-//   }).then((response: any) => {
-//     console.log(response);
-//   }).catch(console.log);
-// }
+function sendNotification(title, body) {
+    admin.messaging().send({
+        notification: {
+            title: title,
+            body: body
+        },
+        token: process.env.KEVINS_PHONE_TOKEN_LOL_TEST
+    }).then((response) => {
+        console.log(response);
+    }).catch(console.log);
+}
 function getNumBoxes(imageData) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
@@ -122,9 +125,9 @@ function playSound(filePath) {
 }
 let cams = [];
 function onArrive(numPackage) {
-    // if (userConfig.notification) {
-    //   sendNotification("Package Arrived", userConfig.notifArrive);
-    // }
+    if (userConfig.notification) {
+        sendNotification("Package Arrived", userConfig.notifArrive);
+    }
     console.log(`Packages: ${numPackage}`);
     if (userConfig["soundfx"] && userConfig["goodSoundPath"] != "") {
         playSound(userConfig["goodSoundPath"]);
@@ -147,9 +150,9 @@ function onTaken(numPackage) {
     if (userConfig["soundfx"] && userConfig["badSoundPath"] != "") {
         playSound(userConfig["badSoundPath"]);
     }
-    // if (userConfig.notification) {
-    //   sendNotification("Package Taken", userConfig.notifStolen);
-    // }
+    if (userConfig.notification) {
+        sendNotification("Package Taken", userConfig.notifStolen);
+    }
     console.log(`Packages taken: ${numPackage}`);
 }
 node_webcam_1.default.create({}).list((availableCams) => {
