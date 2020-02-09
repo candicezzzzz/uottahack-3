@@ -36,7 +36,8 @@ const node_webcam_1 = __importDefault(require("node-webcam"));
 const possibleOptions = [
     'Box',
     'Packaged goods',
-    'Boxed packaged goods'
+    'Boxed packaged goods',
+    'Shipping box'
 ];
 let currentNumBoxes = 0;
 function getNumBoxes(imageData) {
@@ -96,6 +97,10 @@ function onArrive(numPackage) {
     console.log(`Packages: ${numPackage}`);
 }
 function onTaken(numPackage) {
+    cams[0].capture("person", (err, base64) => __awaiter(this, void 0, void 0, function* () {
+        if (err)
+            console.log(err);
+    }));
     console.log(`Packages taken: ${numPackage}`);
 }
 let cams = [];
@@ -117,7 +122,7 @@ node_webcam_1.default.create({}).list((availableCams) => {
     // update every 5sec
     // setInterval(() => {
     //   if (!userConfig.mute) {
-    //     cams[0].capture("capture", async (err: any, base64: string) => {
+    //     cams[1].capture("capture", async (err: any, base64: string) => {
     //       if (err) console.log(err);
     //       if (base64) {
     //         // stupid package adds 23 stupid characters at the front
@@ -144,20 +149,9 @@ app.get('/*.*', (req, res) => {
 });
 app.post('/options', (req, res) => {
     console.log(req.body);
-    // Object.keys(req.body).forEach((key) => {
-    //   if((req.body[key] === 'on') || (req.body[key] === 'true') 
-    //      || (Array.isArray(req.body[key]))) {
-    //     userConfig[key] = true;
-    //   } else if (req.body[key] === 'false') {
-    //     userConfig[key] = false;
-    //   } else {
-    //     userConfig[key] = req.body[key];
-    //   }
-    // });
     Object.keys(req.body).forEach(key => {
         userConfig[key] = req.body[key];
     });
-    //this is so sketchy that idc about making it sketchier
     if (userConfig.mute && userConfig.muteDuration > 0) {
         setTimeout(() => {
             userConfig.mute = false;
@@ -168,7 +162,7 @@ app.post('/options', (req, res) => {
         if (err)
             console.log(err);
     });
-    res.send('Saved');
+    res.send({ message: 'success' });
 });
 const port = 3000;
 app.listen(port, () => {

@@ -38,9 +38,12 @@ function addSettingsSubmitEvent() {
       notification: document.getElementById('notification').checked,
       notifArrive: document.getElementById('notifArrive').value,
       notifStolen: document.getElementById('notifStolen').value,
+      takePicture: document.getElementById('takePicture').checked,
       soundfx: document.getElementById('soundfx').checked,
       soundPath: document.getElementById('sound').value
     };
+
+    console.log(document.getElementById('sound'));
 
     try {
       const res = await post('/options', data);

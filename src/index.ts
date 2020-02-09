@@ -28,7 +28,8 @@ import NodeCam from "node-webcam";
 const possibleOptions: Array<String> = [
   'Box', 
   'Packaged goods', 
-  'Boxed packaged goods'
+  'Boxed packaged goods',
+  'Shipping box'
 ];
 let currentNumBoxes: number = 0;
 
@@ -90,6 +91,10 @@ function onArrive(numPackage: number) {
 }
 
 function onTaken(numPackage: number) {
+  cams[0].capture("person", async (err: any, base64: string) => {
+    if (err) console.log(err);
+
+  });
   console.log(`Packages taken: ${numPackage}`);
 }
 
@@ -117,7 +122,7 @@ NodeCam.create({}).list((availableCams: Array<any>) => {
   // update every 5sec
   // setInterval(() => {
   //   if (!userConfig.mute) {
-  //     cams[0].capture("capture", async (err: any, base64: string) => {
+  //     cams[1].capture("capture", async (err: any, base64: string) => {
   //       if (err) console.log(err);
   //       if (base64) {
   //         // stupid package adds 23 stupid characters at the front
