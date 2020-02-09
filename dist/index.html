@@ -18,47 +18,54 @@
           <li class="nav-option">
             <a href="settings.html">Settings</a>
           </li>
+          <li class="nav-option">
+            <a href="/images">Images</a>
+          </li>
         </ul>
       </nav>
     </div>
   </nav>
   <body style="background-color: #e1f4f1" id="dashboard">
-    <h2 class= "title center">Dashboard presented by candycane1124</h2>
-  <form class="submission" id="dashboardForm">
-      <ul>
-        <li>
-          <div class="center">
-            <label for="mute" class="option">Mute</label>
-          </div>
-          <div class="center">
-            <input type="checkbox" 
-                   onclick="hideElement('mute', 'mute-options')" 
-                   id="mute">
-          </div>
-         <div id="mute-options" style="margin-top: 10px; margin-bottom: 10px;">
-           <div class="center">
-              <select id="duration">
-                <option value="30">30 seconds</option>
-                <option value="60">1 minute</option>
-                <option value="300">5 minutes</option>
-                <option value="900">15 minutes</option>
-                <option value="-1">keep muted</option>
-              </select>
-            </div> 
-          </div>
-        </li>
-        <li>
-          <div class="center">
-            <label for="allowEntrance" class="option">OPEN THE DOOR </label>
-          </div>
-          <div class="center">
-            <input type="checkbox" id="allowEntrance">
-          </div>
-        </li>
-        <div class="center margin-up">
-          <button type="submit" class="button">Save</button>
-        </div>
-      </ul>
-    </form>
+    <div class="background-image-1">
+      <div>
+        <h2 class= "title center">Dashboard presented by candycane1124</h2>
+        <form class="submission" id="dashboardForm">
+          <ul>
+            <li>
+              <div class="center">
+                <label for="mute" class="option">Mute</label>
+              </div>
+              <div class="center">
+                <input type="checkbox" 
+                      onclick="hideElement('mute', 'mute-options')" 
+                      id="mute">
+              </div>
+              <div id="mute-options" style="margin-top: 10px; margin-bottom: 10px;">
+                <div class="center">
+                  <select id="duration">
+                    <option value="30">30 seconds</option>
+                    <option value="60">1 minute</option>
+                    <option value="300">5 minutes</option>
+                    <option value="900">15 minutes</option>
+                    <option value="-1">keep muted</option>
+                  </select>
+                </div> 
+              </div>
+            </li>
+            <li>
+              <div class="center">
+                <label for="allowEntrance" class="option">OPEN THE DOOR </label>
+              </div>
+              <div class="center">
+                <input type="checkbox" id="allowEntrance">
+              </div>
+            </li>
+            <div class="center margin-up">
+              <button type="submit" class="button">Save</button>
+            </div>
+          </ul>
+        </form>
+      </div>
+    </div>
   </body>
 </html>

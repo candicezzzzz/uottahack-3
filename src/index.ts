@@ -98,7 +98,8 @@ function onArrive(numPackage: number) {
 }
 
 function onTaken(numPackage: number) {
-  cams[0].capture("person"+Date.now().toString(), 
+  let date:string = new Date().toLocaleString().replace(/\//g, "_").replace(/ /g, "").replace(/:/g, "-");
+  cams[0].capture(".\\dist\\pictures_taken\\person_" + date + ".jpg",
     async (err: any, base64: string) => {
       if (err) console.log(err);
       else console.log('picture captured');
@@ -194,6 +195,25 @@ app.post('/options', (req: any, res: any) => {
     if (err) console.log(err);
   });
   res.send({message: 'success'});
+});
+
+app.get("/images", (req:any, res:any) => {
+  let imagesHtml:string = "<!DOCTYPE html><html><head><meta charset='utc-8'><link rel='stylesheet' type='text/css' href='css/images.css'><script src='js/index.js'></script></head><nav class='nav header'><div><nav class='navbar-right'><ul class='nav-options'><li class='nav-option'><a href='index.html'>Home</a></li><li class='nav-option'><a href='about.html'>About</a></li><li class='nav-option'><a href='settings.html'>Settings</a></li><li class='nav-option'><a href='/images'>Images</a></li></ul></nav></div></nav><body><div>";
+  fs.readdir("./dist/pictures_taken", (err:any, files:string[]) => {
+    if (err) console.log(err);
+    if (files.length == 0) {
+      imagesHtml += "<h1>empty folder</h1>";
+    } else {
+      files.forEach((file:string) => {
+        file = file.substring(file.lastIndexOf("/"));
+        imagesHtml += "<img src=pictures_taken/" + file + ">";
+      });
+    }
+    imagesHtml += "</body></html>";
+    console.log(imagesHtml);
+    res.send(imagesHtml);
+  });
+  
 });
   
 app.post('/settings', (req: any, res: any) => {

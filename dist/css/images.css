@@ -1,0 +1,55 @@
+.header {
+  background-color: #137a7f;
+  position: fixed;
+  background: linear-gradient(to left, #13a0a7 , #0f6f74); 
+  width: 100%;
+  top: 0;
+  box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2), 0 8px 30px 0 rgba(0, 0, 0, 0.19);
+}
+
+.nav {
+  font-family: "Comic Sans MS";
+}
+
+.navbar-right {
+  padding-left: 50px;
+}
+
+.navbar-right ul {
+  margin: 2px;
+  padding: 2px;
+  overflow: hidden;
+  list-style-type: none;
+}
+
+.navbar-right li {
+  float: left;
+}
+
+.nav-options {
+  display: inline-block;
+}
+
+.nav-option {
+  padding: 16px;
+}
+
+.nav-option:hover {
+  background-color: #118a90;
+}
+
+.small-label {
+  font-size: 12px;
+}
+
+.header a {
+  color: #bec8d1;
+  font-size: 18px;
+  text-decoration: none;
+}
+
+body {
+  padding-top: 100px;
+  margin: 0;
+  background-color: #e1f4f1;
+}

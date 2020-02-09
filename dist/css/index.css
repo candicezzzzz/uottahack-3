@@ -1,7 +1,7 @@
 .header {
   background-color: #137a7f;
   position: fixed;
-  background: linear-gradient(to left, #148c92 , #0f6f74); 
+  background: linear-gradient(to left, #13a0a7 , #0f6f74); 
   width: 100%;
   top: 0;
   box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2), 0 8px 30px 0 rgba(0, 0, 0, 0.19);
@@ -55,7 +55,9 @@
 .button {
   background-color: rgb(90,200,185);
   color: rgb(0,90,72);
-  border: none;
+  border-radius: 15px;
+  border-style: solid;
+  border-color: #373b3e;
   font-weight: bold;
   padding: 16px 32px;
   text-align: center;
@@ -81,6 +83,22 @@
   font-size: 25px;
 }
 
+.background-image-1 {
+  padding-top: 50px;
+  height: 600px;
+  background-image: url(../imgs/boxes.png);
+  border-bottom-style: solid;
+  border-bottom-width: 5px;
+  border-bottom-color: #373b3e;
+}
+
+/* .box-design {
+  text-align: center;
+  padding: 30px;
+  border-radius: 1em;
+  background-color: rgba(190,200,209, 0.8);
+} */
+
 #mute-options {
   display: none;
 }
@@ -92,6 +110,7 @@ form {
   /* Form outline */
   padding: 1em;
   border: 3px solid #137a7f;
+  background-color: rgba(190,200,209, 0.8);
   border-radius: 1em;
 }
 
