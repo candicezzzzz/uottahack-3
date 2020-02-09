@@ -22,6 +22,8 @@ const body_parser_1 = __importDefault(require("body-parser"));
 // });
 // import util from "util";
 const fs_1 = __importDefault(require("fs"));
+// const fin = util.promisify(fs.readFile);
+// const fout = util.promisify(fs.writeFile);
 let userConfig;
 fs_1.default.readFile("userconfig.json", (err, data) => {
     if (err)
@@ -198,6 +200,19 @@ app.get('/config', (req, res) => {
 app.get('/*.*', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, req.url));
 });
+app.post("/resetConfig", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //dont mind this endless callback chain
+    fs_1.default.readFile('userConfigDefault.json', (err, data) => {
+        if (err)
+            console.log(err);
+        userConfig = JSON.parse(data);
+        fs_1.default.writeFile('userConfig.json', JSON.stringify(userConfig, undefined, 2), (err) => {
+            if (err)
+                console.log(err);
+            res.send({ message: 'success' });
+        });
+    });
+}));
 app.post("/options", (req, res) => {
     console.log(req.body);
     Object.keys(req.body).forEach(key => {

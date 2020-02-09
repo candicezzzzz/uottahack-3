@@ -9,7 +9,6 @@ import bodyParser from "body-parser";
 //   credential: admin.credential.cert("./uOttoFirebaseKey.json")
 // });
 
-// import util from "util";
 import fs from "fs";
 
 let userConfig: any;
@@ -17,8 +16,6 @@ fs.readFile("userconfig.json", (err: any, data: any) => {
   if (err) console.log(err);
   userConfig = JSON.parse(data);
 });
-
-// const userConfig = JSON.parse(fs.readFile('userconfig.json'));
 
 // process the forms passed
 const formidable: any = require("formidable");
@@ -208,6 +205,21 @@ app.get('/config', (req: any, res: any) => {
 
 app.get('/*.*', (req: any, res: any) => {
   res.sendFile(path.join(__dirname, req.url));
+});
+
+app.post("/resetConfig", async (req: any, res: any) => {
+  //dont mind this endless callback chain
+  fs.readFile('userConfigDefault.json', (err: any, data: any) => {
+    if (err) console.log(err);
+    userConfig = JSON.parse(data);
+    fs.writeFile('userConfig.json', 
+                 JSON.stringify(userConfig, undefined, 2), 
+                 (err: any) => {
+      if (err) console.log(err);
+      res.send({message: 'success'});
+    });
+  });
+  
 });
 
 app.post("/options", (req: any, res: any) => {

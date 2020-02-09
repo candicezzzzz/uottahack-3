@@ -51,6 +51,9 @@
 /*here is the body and stuff
 
 i want death*/
+.form {
+  text-align: center;
+}
 
 .form button {
   background-color: rgb(90,200,185);
@@ -85,7 +88,7 @@ i want death*/
 
 /* these are really dumb formatters */
 .margin-up {
-  margin-top: 75px;
+  margin-top: 35px;
 }
 
 .margin-left{
