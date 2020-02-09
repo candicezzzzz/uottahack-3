@@ -76,7 +76,7 @@
   text-align: center;
   background-color: rgba(190,200,209, 0.8);
   padding: 10px;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   border: solid;
   border-color: rgb(24, 126, 114);
 }
@@ -87,7 +87,7 @@
 }
 
 .submission li {
-  margin-bottom: 50px;
+  margin-bottom: 40px;
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   font-size: 25px;
 }
@@ -104,6 +104,68 @@
   border-top-color: #373b3e;
 }
 
+.checkbox input[type="checkbox"] {
+  opacity: 0;
+}
+
+.checkbox label::before{
+    content: "";
+    display: inline-block;
+    
+    height: 32px;
+    width: 32px;
+    
+    margin-left: -25px;
+    margin-top: 20px;
+
+    border: 1px solid;   
+}
+
+.checkbox label::after {
+    content: "";
+    display: inline-block;
+    height: 10px;
+    width: 20px;
+    border-color: #13a0a7;
+    border-left: 4px solid;
+    border-bottom: 4px solid;
+
+    margin-left: -25px;
+    margin-top: 20px;
+
+    transform: rotate(-45deg);
+}
+.checkbox label {
+  position: relative;
+}
+
+.checkbox label::before,
+.checkbox label::after {
+  position: absolute;
+}
+/*Outer-box*/
+.checkbox label::before {
+  top: 3px;
+}
+/*Checkmark*/
+.checkbox label::after {
+  left: 4px;
+  top: 9px;
+}
+
+.checkbox input[type="checkbox"] + label::after {
+  content: none;
+}
+/*Unhide the checkmark on the checked state*/
+.checkbox input[type="checkbox"]:checked + label::after {
+  content: "";
+}
+
+/*Adding focus styles on the outer-box of the fake checkbox*/
+.checkbox input[type="checkbox"]:focus + label::before {
+  outline: rgb(15, 81, 151) auto 5px;
+}
+
 /* .box-design {
   text-align: center;
   padding: 30px;
@@ -112,6 +174,7 @@
 } */
 
 #mute-options {
+  margin-top: 25px;
   display: none;
 }
 
@@ -135,6 +198,11 @@ ul {
 body {
   padding-top: 100px;
   margin: 0;
+}
+
+h6 {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-size: 8;
 }
 
 h1 {

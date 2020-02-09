@@ -60,6 +60,7 @@ i want death*/
   padding: 16px 32px;
   text-align: center;
   font-size: 17px;
+  border-radius: 1em;
 }
 
 .form button:hover {

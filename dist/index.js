@@ -39,6 +39,8 @@ app.use(body_parser_1.default.urlencoded({ extended: true }));
 // @ts-ignore
 const vision_1 = __importDefault(require("@google-cloud/vision"));
 const client = new vision_1.default.ImageAnnotatorClient();
+// @ts-ignore
+const node_webcam_1 = __importDefault(require("node-webcam"));
 const possibleOptions = [
     "Box",
     "Packaged goods",
@@ -148,45 +150,44 @@ function onTaken(numPackage) {
     // }
     console.log(`Packages taken: ${numPackage}`);
 }
-// NodeCam.create({}).list((availableCams: Array<any>) => {
-//   availableCams.forEach((element: any) => {
-//     cams.push(
-//       NodeCam.create({
-//         width: 1280,
-//         height: 720,
-//         quality: 100,
-//         delay: 0,
-//         saveShots: false,
-//         output: "jpeg",
-//         device: element,
-//         callbackReturn: "base64",
-//         verbose: true
-//       })
-//     );
-//   });
-//   console.log(cams);
-//   // update every 5sec
-//   setInterval(() => {
-//     if (!userConfig.mute) {
-//       cams[1].capture("capture", async (err: any, base64: string) => {
-//         if (err) console.log(err);
-//         if (base64) {
-//           // stupid package adds 23 stupid characters at the front
-//           const numPackageDifference = await getPackageDifference(
-//             base64.substring(23)
-//           );
-//           if (numPackageDifference > 0) {
-//             onArrive(numPackageDifference);
-//           } else if (numPackageDifference < 0) {
-//             onTaken(-numPackageDifference);
-//           }
-//         } else {
-//           console.log("alsdkfjasdg undefined");
-//         }
-//       });
-//     }
-//   }, 5000);
-// });
+node_webcam_1.default.create({}).list((availableCams) => {
+    availableCams.forEach((element) => {
+        cams.push(node_webcam_1.default.create({
+            width: 1280,
+            height: 720,
+            quality: 100,
+            delay: 0,
+            saveShots: false,
+            output: "jpeg",
+            device: element,
+            callbackReturn: "base64",
+            verbose: true
+        }));
+    });
+    console.log(cams);
+    // update every 5sec
+    setInterval(() => {
+        if (!userConfig.mute) {
+            cams[1].capture("capture", (err, base64) => __awaiter(void 0, void 0, void 0, function* () {
+                if (err)
+                    console.log(err);
+                if (base64) {
+                    // stupid package adds 23 stupid characters at the front
+                    const numPackageDifference = yield getPackageDifference(base64.substring(23));
+                    if (numPackageDifference > 0) {
+                        onArrive(numPackageDifference);
+                    }
+                    else if (numPackageDifference < 0) {
+                        onTaken(-numPackageDifference);
+                    }
+                }
+                else {
+                    console.log("alsdkfjasdg undefined");
+                }
+            }));
+        }
+    }, 5000);
+});
 ////////express stuff
 app.get("/", (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "index.html"));

@@ -96,10 +96,14 @@ body {
   margin: 0;
 }
 
+p {
+  font-size: 16;
+}
+
 .description {
   font-size: 20px;
   text-align: center;
-  padding: 20px;
+  padding: 10px;
   margin-top: 25px;
   margin-left: 75px;
   margin-right: 75px;
@@ -111,7 +115,7 @@ body {
 .credits {
   font-size: 20px;
   text-align: center;
-  padding: 20px;
+  padding: 10px;
   margin-top: 50px;
   margin-left: 75px;
   margin-right: 75px;

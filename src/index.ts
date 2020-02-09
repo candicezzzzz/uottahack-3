@@ -133,6 +133,7 @@ function onTaken(numPackage: number) {
   .replace(/\//g, "_")
   .replace(/ /g, "")
   .replace(/:/g, "-");
+  
   if (userConfig["takePicture"]) {
     cams[0].capture(
       ".\\dist\\pictures_taken\\person_" + date + ".jpg",
@@ -153,47 +154,47 @@ function onTaken(numPackage: number) {
   console.log(`Packages taken: ${numPackage}`);
 }
 
-// NodeCam.create({}).list((availableCams: Array<any>) => {
-//   availableCams.forEach((element: any) => {
-//     cams.push(
-//       NodeCam.create({
-//         width: 1280,
-//         height: 720,
-//         quality: 100,
-//         delay: 0,
-//         saveShots: false,
-//         output: "jpeg",
-//         device: element,
-//         callbackReturn: "base64",
-//         verbose: true
-//       })
-//     );
-//   });
-//   console.log(cams);
+NodeCam.create({}).list((availableCams: Array<any>) => {
+  availableCams.forEach((element: any) => {
+    cams.push(
+      NodeCam.create({
+        width: 1280,
+        height: 720,
+        quality: 100,
+        delay: 0,
+        saveShots: false,
+        output: "jpeg",
+        device: element,
+        callbackReturn: "base64",
+        verbose: true
+      })
+    );
+  });
+  console.log(cams);
 
-//   // update every 5sec
-//   setInterval(() => {
-//     if (!userConfig.mute) {
-//       cams[1].capture("capture", async (err: any, base64: string) => {
-//         if (err) console.log(err);
-//         if (base64) {
-//           // stupid package adds 23 stupid characters at the front
+  // update every 5sec
+  setInterval(() => {
+    if (!userConfig.mute) {
+      cams[1].capture("capture", async (err: any, base64: string) => {
+        if (err) console.log(err);
+        if (base64) {
+          // stupid package adds 23 stupid characters at the front
 
-//           const numPackageDifference = await getPackageDifference(
-//             base64.substring(23)
-//           );
-//           if (numPackageDifference > 0) {
-//             onArrive(numPackageDifference);
-//           } else if (numPackageDifference < 0) {
-//             onTaken(-numPackageDifference);
-//           }
-//         } else {
-//           console.log("alsdkfjasdg undefined");
-//         }
-//       });
-//     }
-//   }, 5000);
-// });
+          const numPackageDifference = await getPackageDifference(
+            base64.substring(23)
+          );
+          if (numPackageDifference > 0) {
+            onArrive(numPackageDifference);
+          } else if (numPackageDifference < 0) {
+            onTaken(-numPackageDifference);
+          }
+        } else {
+          console.log("alsdkfjasdg undefined");
+        }
+      });
+    }
+  }, 5000);
+});
 
 ////////express stuff
 
