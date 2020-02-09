@@ -25,6 +25,10 @@ fs_1.default.readFile("userconfig.json", (err, data) => {
     userConfig = JSON.parse(data);
 });
 // const userConfig = JSON.parse(fs.readFile('userconfig.json'));
+// process the forms passed
+const formidable = require("formidable");
+// used for music
+// const neko = require('sound-play');
 const app = express_1.default();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
@@ -103,6 +107,13 @@ function onTaken(numPackage) {
     }));
     console.log(`Packages taken: ${numPackage}`);
 }
+// async function playSound(filePath: string) {
+//   try {
+//     await neko.play(filePath);
+//   } catch(error) {
+//     throw error;
+//   }
+// }
 let cams = [];
 node_webcam_1.default.create({}).list((availableCams) => {
     availableCams.forEach((element) => {

@@ -14,6 +14,13 @@ fs.readFile("userconfig.json", (err: any, data: any) => {
 });
 
 // const userConfig = JSON.parse(fs.readFile('userconfig.json'));
+
+// process the forms passed
+const formidable: any =  require("formidable");
+
+// used for music
+// const neko = require('sound-play');
+
 const app: express.Application = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -98,6 +105,14 @@ function onTaken(numPackage: number) {
   console.log(`Packages taken: ${numPackage}`);
 }
 
+// async function playSound(filePath: string) {
+//   try {
+//     await neko.play(filePath);
+//   } catch(error) {
+//     throw error;
+//   }
+// }
+
 
 let cams: Array<any> = [];
 
@@ -173,6 +188,38 @@ app.post('/options', (req: any, res: any) => {
     if (err) console.log(err);
   });
   res.send({message: 'success'});
+});
+  
+app.post('/settings', (req: any, res: any) => {
+  let form: any  = new formidable.IncomingForm;
+  form.parse(req);
+
+  form.on('field', (name: any, field: any) => {
+    if((field ==='on') || (field === 'true')) {
+      userConfig[name] = true;
+    } else if (field === 'false') {
+      userConfig[name] = false;
+    } else {
+      userConfig[name] = field;
+    }
+
+    console.log(name, field);
+  });
+
+  form.on('file', (name: any, file: any) => {
+    userConfig[name] = file["path"];
+    console.log(name, file);
+  });
+  
+  form.on('error', (err: any) => {
+    throw err;
+  });
+  
+  form.on('end', () => {
+    res.end();
+  });
+  
+  res.send('Saved');
 });
 
 const port: number = 3000;
