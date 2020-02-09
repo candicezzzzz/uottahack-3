@@ -89,22 +89,6 @@ async function getPackageDifference(imageData: string): Promise<number> {
   });
 }
 
-//testing with local files
-// async function test() {
-//   const dirName = "boxes/";
-//   const files = await getAll(dirName);
-//   for (let file of files) {
-//     console.log(file + ": ");
-//     try {
-//       console.log(await getNumBoxes(fs.readFileSync(dirName+file)));
-//     } catch (err) {
-//       console.log(err.message);
-//     }
-
-//   }
-// }
-// test();
-
 function playSound(filePath: string): void {
   neko.play(filePath, (err: any) => {
     if (err) console.log(`${err}`);
@@ -170,27 +154,27 @@ NodeCam.create({}).list((availableCams: Array<any>) => {
   console.log(cams);
 
   // update every 5sec
-  setInterval(() => {
-    if (!userConfig.mute) {
-      cams[1].capture("capture", async (err: any, base64: string) => {
-        if (err) console.log(err);
-        if (base64) {
-          // stupid package adds 23 stupid characters at the front
+  // setInterval(() => {
+  //   if (!userConfig.mute) {
+  //     cams[1].capture("capture", async (err: any, base64: string) => {
+  //       if (err) console.log(err);
+  //       if (base64) {
+  //         // stupid package adds 23 stupid characters at the front
 
-          const numPackageDifference = await getPackageDifference(
-            base64.substring(23)
-          );
-          if (numPackageDifference > 0) {
-            onArrive(numPackageDifference);
-          } else if (numPackageDifference < 0) {
-            onTaken(-numPackageDifference);
-          }
-        } else {
-          console.log("alsdkfjasdg undefined");
-        }
-      });
-    }
-  }, 5000);
+  //         const numPackageDifference = await getPackageDifference(
+  //           base64.substring(23)
+  //         );
+  //         if (numPackageDifference > 0) {
+  //           onArrive(numPackageDifference);
+  //         } else if (numPackageDifference < 0) {
+  //           onTaken(-numPackageDifference);
+  //         }
+  //       } else {
+  //         console.log("alsdkfjasdg undefined");
+  //       }
+  //     });
+  //   }
+  // }, 5000);
 });
 
 ////////express stuff
@@ -245,7 +229,7 @@ app.post("/options", (req: any, res: any) => {
   res.send({ message: "success" });
 });
 
-app.get("/images", (req:any, res:any) => {
+app.get("/images", (req: any, res: any) => {
   let imagesHtml:string = "<!DOCTYPE html><html><head><meta charset='utc-8'><link rel='stylesheet' type='text/css' href='css/images.css'><script src='js/index.js'></script></head><nav class='nav header'><div><nav class='navbar-right'><ul class='nav-options'><li class='nav-option'><a href='index.html'>Home</a></li><li class='nav-option'><a href='about.html'>About</a></li><li class='nav-option'><a href='settings.html'>Settings</a></li><li class='nav-option'><a href='/images'>Images</a></li></ul></nav></div></nav><body><script>function deleteImg(control, imageId) {fs.unlinkSync(document.getElementById(imageId).src);}</script><div>";
   fs.readdir("./dist/pictures_taken", (err:any, files:string[]) => {
     if (err) console.log(err);

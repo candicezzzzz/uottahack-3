@@ -10,12 +10,11 @@ function toggleElement(control, ...targets) {
 
 async function resetConfig() {
   try {
-    const res = await fetch('/resetConfig', {
-      method: 'POST',
-    });
+    const res = await postJson('/resetConfig', {});
+    console.log(res);
     if (res.message === 'success') {
-      alert('All configurations have been reset');
       location.reload();
+      alert('All configurations have been reset');
     }
   } catch (err) {
     console.log(err);
