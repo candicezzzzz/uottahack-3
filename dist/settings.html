@@ -38,8 +38,8 @@
             </div>
             <div class="center">
               <input type="checkbox" 
-                    id="notification"
-                    onclick="hideElement('notification', 'arrive', 'stolen')" 
+                    id="notification" class="toggle"
+                    onclick="toggleElement('notification', 'arrive', 'stolen')" 
                     checked="true"
                     value="true">
             </div>
@@ -75,8 +75,8 @@
             </div>
             <div class="center">
               <input type="checkbox" 
-                    id="soundfx" 
-                    onclick="hideElement('soundfx', 'soundupload')" 
+                    id="soundfx" class="toggle"
+                    onclick="toggleElement('soundfx', 'soundupload')" 
                     value="true">
             </div>
             <div id="soundupload">

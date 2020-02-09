@@ -1,11 +1,11 @@
 {
   "muteDuration": 0,
   "allowEntrance": true,
-  "soundPath": "",
+  "soundPath": "C:\\Users\\shari\\AppData\\Local\\Temp\\upload_b2268c5a34285767bb92efc6f751afd6",
   "takePicture": false,
   "notifArrive": "A package has arrived!sdfljsldfkj",
   "notifStolen": "dear lord the package is being taken what do we do",
-  "soundfx": true,
+  "soundfx": false,
   "notification": true,
   "mute": true
 }
