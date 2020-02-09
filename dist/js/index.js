@@ -33,23 +33,21 @@ function addDashboardSubmitEvent() {
 function addSettingsSubmitEvent() {
   document.getElementById('settingsForm')
           .addEventListener('submit', async(event) => {
-    // event.preventDefault();
+    event.preventDefault();
     const data = {
       notification: document.getElementById('notification').checked,
       notifArrive: document.getElementById('notifArrive').value,
       notifStolen: document.getElementById('notifStolen').value,
       takePicture: document.getElementById('takePicture').checked,
       soundfx: document.getElementById('soundfx').checked,
-      soundPath: document.getElementById('soundPath').files[0].name
     };
-
-    // console.log(document.getElementById('soundPath').files);
 
     try {
       const res = await postJson('/options', data);
-      if (res.message === 'success') {
+      const fileRes = await postFile('/music', 
+        document.getElementById('settingsForm'));
+      if (res.message === 'success' && fileRes.message === 'success') {
         alert('Saved');
-        // event.preventDefault();
       }
     } catch (err) {
       console.log(err);
@@ -77,7 +75,6 @@ async function setInitialSettings() {
     document.getElementById('notifStolen').value = config.notifStolen;
     document.getElementById('takePicture').checked = config.takePicture;
     document.getElementById('soundfx').checked = config.soundfx;
-    // document.getElementById('soundPath').value = config.soundPath;
   } catch (err) {
     console.log(err.message);
   }
@@ -127,22 +124,17 @@ function postJson(url, data) {
   });
 }
 
-// function postFile(url, data) {
-//   return new Promise(async(resolve, reject) => {
-//     try {
-//       const formData = new FormData();
-//       for (const name in data) {
-//         formData.append(name, data[name]);
-//       }
-
-//       const response = await fetch(url, {
-//         method: 'POST',
-//         body: formData
-//       });
-//       resolve(response.json());
-//     } catch (err) {
-//       console.log('post err: ' + err.message);
-//       reject(err);
-//     }
-//   });
-// }
+function postFile(url, data) {
+  return new Promise(async(resolve, reject) => {
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: new FormData(data)
+      });
+      resolve(response.json());
+    } catch (err) {
+      console.log('post err: ' + err.message);
+      reject(err);
+    }
+  });
+}

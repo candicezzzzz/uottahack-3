@@ -216,21 +216,10 @@ app.get("/images", (req:any, res:any) => {
   
 });
   
-app.post('/settings', (req: any, res: any) => {
+app.post('/music', (req: any, res: any) => {
   let form: any  = new formidable.IncomingForm;
   form.parse(req);
 
-  // form.on('field', (name: any, field: any) => {
-  //   if((field === 'on') || (field === 'true')) {
-  //     userConfig[name] = true;
-  //   } else if (field === 'false') {
-  //     userConfig[name] = false;
-  //   } else {
-  //     userConfig[name] = field;
-  //   }
-
-  //   console.log(name, field);
-  // });
 
   form.on('file', (name: any, file: any) => {
     userConfig[name] = file["path"];
@@ -240,8 +229,7 @@ app.post('/settings', (req: any, res: any) => {
   form.on('error', (err: any) => {
     throw err;
   });
-  // res.send({message: 'success'});
-  res.sendFile(path.join(__dirname, 'settings.html'));
+  res.send({message: 'success'});
 });
 
 const port: number = 3000;
