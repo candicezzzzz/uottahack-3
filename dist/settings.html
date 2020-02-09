@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>chair null</title>
     <link rel="stylesheet" type="text/css" href="css/settings.css">
-    <script src="js/settings.js"></script>
+    <script src="js/index.js"></script>
   </head>
   <nav class="nav header">
     <div>
@@ -23,32 +23,43 @@
       </nav>
     </div>
   </nav>
-  <body>
+  <body id="settings">
     <h1 class="center title">Settings</h1>
-    <form action="/settings" method="POST" class="form" enctype="multipart/form-data">
+    <form id="settingsForm" class="form" enctype="multipart/form-data">
       <ul>
         <li>
           <div class="center">
             <label for="notification">Notification</label>
           </div>
           <div class="center">
-            <input type="checkbox" id="notification"  name="notification" onclick="splitter('notification', 'arrive', 'stolen')" value="true">
-            <input type="hidden" name="notification" value="false">
+            <input type="checkbox" 
+                   id="notification"
+                   onclick="hideElement('notification', 'arrive', 'stolen')" 
+                   value="true">
           </div>
           <div id="arrive">
             <div class="center">
-              <label for="notifArrive" class="small-label">Message to be sent when a package arrives</label>
+              <label for="notifArrive" 
+                     class="small-label">Message to be sent when a package arrives</label>
             </div>
             <div class="center">
-              <input type="text" size="50" id="notifArrive" name="notifArrive" value="A package has arrived!">
+              <input type="text" 
+                     size="50" 
+                     id="notifArrive" 
+                     value="A package has arrived!">
             </div>
           </div>
           <div id="stolen">
             <div class="center">
-              <label for="notifStolen" class="small-label">Message to be sent when a package is taken</label>
+              <label for="notifStolen" class="small-label">
+                Message to be sent when a package is taken
+              </label>
             </div>
             <div class="center">
-              <input type="text" size="50" id="notifStolen" name="notifStolen" value="Dear lord the package is being taken what do we do">
+              <input type="text" 
+                     size="50" 
+                     id="notifStolen" 
+                     value="Dear lord the package is being taken what do we do">
             </div>
           </div>
         </li>
@@ -57,8 +68,10 @@
             <label for="soundfx">Should Sound Effect play?</label>
           </div>
           <div class="center">
-            <input type="checkbox" id="soundfx" name="soundfx" onclick="update('soundfx', 'soundupload')" value="true">
-            <input type="hidden" name="soundfx" value="false">
+            <input type="checkbox" 
+                   id="soundfx" 
+                   onclick="hideElement('soundfx', 'soundupload')" 
+                   value="true">
           </div>
           <div id="soundupload">
             <div class="center">
@@ -71,11 +84,13 @@
         </li>
         <li>
           <div class="center">
-            <label for="takePicture">Take a picture (if package taken)</label>
+            <label for="takePicture">
+              Take a picture of the person (if package taken)
+            </label>
           </div>
           <div class="center">
-            <input type="checkbox" id="takePicture"  name="takePicture" value="true">
-            <input type="hidden" name="takePicture" value="false">
+            <input type="checkbox" id="takePicture" value="true">
+            <input type="hidden" value="false">
           </div>
         </li>
         <li>
