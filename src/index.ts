@@ -99,7 +99,7 @@ function onArrive(numPackage: number) {
 
 function onTaken(numPackage: number) {
   let date:string = new Date().toLocaleString().replace(/\//g, "_").replace(/ /g, "").replace(/:/g, "-");
-  cams[0].capture(".\\pictures_taken\\person_" + date + ".jpg",
+  cams[0].capture(".\\dist\\pictures_taken\\person_" + date + ".jpg",
     async (err: any, base64: string) => {
       if (err) console.log(err);
       else console.log('picture captured');
@@ -192,22 +192,20 @@ app.post('/options', (req: any, res: any) => {
 });
 
 app.get("/images", (req:any, res:any) => {
-  let cancerousStr:string = "<html><body><h1>asdf</h1>";
-  console.log("shootme");
-  fs.readdir("./pictures_taken", (err:any, files:string[]) => {
-    console.log(files);
-    console.log(files.length);
+  let imagesHtml:string = "<!DOCTYPE html><html><head><meta charset='utc-8'><link rel='stylesheet' type='text/css' href='css/images.css'><script src='js/index.js'></script></head><nav class='nav header'><div><nav class='navbar-right'><ul class='nav-options'><li class='nav-option'><a href='index.html'>Home</a></li><li class='nav-option'><a href='about.html'>About</a></li><li class='nav-option'><a href='settings.html'>Settings</a></li><li class='nav-option'><a href='/images'>Images</a></li></ul></nav></div></nav><body><div>";
+  fs.readdir("./dist/pictures_taken", (err:any, files:string[]) => {
     if (err) console.log(err);
     if (files.length == 0) {
-      cancerousStr += "<h1>empty folder</h1>";
-      console.log(cancerousStr);
+      imagesHtml += "<h1>empty folder</h1>";
     } else {
       files.forEach((file:string) => {
-        cancerousStr += "<img src=" + file.toString() + ">";
+        file = file.substring(file.lastIndexOf("/"));
+        imagesHtml += "<img src=pictures_taken/" + file + ">";
       });
     }
-    cancerousStr += "</body></html>";
-    res.send(cancerousStr);
+    imagesHtml += "</body></html>";
+    console.log(imagesHtml);
+    res.send(imagesHtml);
   });
   
 });
