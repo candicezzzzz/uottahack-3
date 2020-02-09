@@ -28,7 +28,7 @@ fs_1.default.readFile("userconfig.json", (err, data) => {
 // process the forms passed
 const formidable = require("formidable");
 // used for music
-const neko = require('sound-play');
+// const neko = require('sound-play');
 const app = express_1.default();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
@@ -102,16 +102,13 @@ function onArrive(numPackage) {
 function onTaken(numPackage) {
     console.log(`Packages taken: ${numPackage}`);
 }
-function playSound(filePath) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            yield neko.play(filePath);
-        }
-        catch (error) {
-            throw error;
-        }
-    });
-}
+// async function playSound(filePath: string) {
+//   try {
+//     await neko.play(filePath);
+//   } catch(error) {
+//     throw error;
+//   }
+// }
 let cams = [];
 node_webcam_1.default.create({}).list((availableCams) => {
     availableCams.forEach((element) => {
@@ -158,20 +155,9 @@ app.get('/*.*', (req, res) => {
 });
 app.post('/options', (req, res) => {
     console.log(req.body);
-    // Object.keys(req.body).forEach((key) => {
-    //   if((req.body[key] === 'on') || (req.body[key] === 'true') 
-    //      || (Array.isArray(req.body[key]))) {
-    //     userConfig[key] = true;
-    //   } else if (req.body[key] === 'false') {
-    //     userConfig[key] = false;
-    //   } else {
-    //     userConfig[key] = req.body[key];
-    //   }
-    // });
     Object.keys(req.body).forEach(key => {
         userConfig[key] = req.body[key];
     });
-    //this is so sketchy that idc about making it sketchier
     if (userConfig.mute && userConfig.muteDuration > 0) {
         setTimeout(() => {
             userConfig.mute = false;
@@ -182,6 +168,7 @@ app.post('/options', (req, res) => {
         if (err)
             console.log(err);
     });
+    res.send({ message: 'success' });
 });
 app.post('/settings', (req, res) => {
     let form = new formidable.IncomingForm;
