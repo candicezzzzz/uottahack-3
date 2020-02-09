@@ -72,6 +72,15 @@
   text-align: center;
 }
 
+.centered-fill {
+  text-align: center;
+  background-color: rgba(190,200,209, 0.8);
+  padding: 10px;
+  margin-bottom: 50px;
+  border: solid;
+  border-color: rgb(24, 126, 114);
+}
+
 /*this makes me want to die*/
 .margin-up {
   margin-top: 75px;
@@ -90,6 +99,9 @@
   border-bottom-style: solid;
   border-bottom-width: 5px;
   border-bottom-color: #373b3e;
+  border-top-style: solid;
+  border-top-width: 5px;
+  border-top-color: #373b3e;
 }
 
 /* .box-design {
@@ -125,6 +137,10 @@ body {
   margin: 0;
 }
 
-h2 {
+h1 {
   font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+p {
+  font-size: 14px;
 }
