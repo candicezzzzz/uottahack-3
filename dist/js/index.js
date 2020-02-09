@@ -8,6 +8,20 @@ function toggleElement(control, ...targets) {
   }
 }
 
+async function resetConfig() {
+  try {
+    const res = await fetch('/resetConfig', {
+      method: 'POST',
+    });
+    if (res.message === 'success') {
+      alert('All configurations have been reset');
+      location.reload();
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 function addDashboardSubmitEvent() {
   document.getElementById('dashboardForm')
           .addEventListener('submit', async(event) => {

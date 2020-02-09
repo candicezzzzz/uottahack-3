@@ -36,6 +36,7 @@
             <div class="center">
               <label for="notification">Notifications</label>
             </div>
+            
             <div class="center">
               <input type="checkbox" 
                     id="notification" class="toggle"
@@ -81,7 +82,7 @@
             </div>
             <div id="soundupload">
               <div class="center">
-                <label for="goodSoundPath">Sound effect to play if package is left</label>
+                <label for="goodSoundPath">Sound effect to play if package arrives</label>
               </div>
               <div class="center">
                 <input type="file" id="goodSoundPath" name="goodSoundPath" accept="audio/*">
@@ -101,11 +102,14 @@
               </label>
             </div>
             <div class="center">
-              <input type="checkbox" id="takePicture" value="true" checked="true">
+              <input type="checkbox" id="takePicture" name="takePicture" value="true" checked="true">
             </div>
           </li>
           <li>
             <div class="center margin-up">
+              <button id="reset" onclick="resetConfig()">
+                Reset
+              </button>
               <button type="submit">Save</button>
             </div>
           </li>

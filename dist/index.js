@@ -11,24 +11,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv-safe").config();
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const body_parser_1 = __importDefault(require("body-parser"));
-const admin = __importStar(require("firebase-admin"));
-admin.initializeApp({
-    credential: admin.credential.cert("./uOttoFirebaseKey.json")
-});
+// import * as admin from "firebase-admin";
+// admin.initializeApp({
+//   credential: admin.credential.cert("./uOttoFirebaseKey.json")
+// });
 // import util from "util";
 const fs_1 = __importDefault(require("fs"));
+// const fin = util.promisify(fs.readFile);
+// const fout = util.promisify(fs.writeFile);
 let userConfig;
 fs_1.default.readFile("userconfig.json", (err, data) => {
     if (err)
@@ -55,17 +50,17 @@ const possibleOptions = [
     "Shipping box"
 ];
 let currentNumBoxes = 0;
-function sendNotification(title, body) {
-    admin.messaging().send({
-        notification: {
-            title: title,
-            body: body
-        },
-        token: process.env.KEVINS_PHONE_TOKEN_LOL_TEST
-    }).then((response) => {
-        console.log(response);
-    }).catch(console.log);
-}
+// function sendNotification(title: string, body: string) {
+//   admin.messaging().send({
+//     notification: {
+//       title: title,
+//       body: body
+//     },
+//     token: process.env.KEVINS_PHONE_TOKEN_LOL_TEST!
+//   }).then((response: any) => {
+//     console.log(response);
+//   }).catch(console.log);
+// }
 function getNumBoxes(imageData) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
@@ -127,9 +122,9 @@ function playSound(filePath) {
 }
 let cams = [];
 function onArrive(numPackage) {
-    if (userConfig.notification) {
-        sendNotification("Package Arrived", userConfig.notifArrive);
-    }
+    // if (userConfig.notification) {
+    //   sendNotification("Package Arrived", userConfig.notifArrive);
+    // }
     console.log(`Packages: ${numPackage}`);
     if (userConfig["soundfx"] && userConfig["goodSoundPath"] != "") {
         playSound(userConfig["goodSoundPath"]);
@@ -142,23 +137,21 @@ function onTaken(numPackage) {
         .replace(/ /g, "")
         .replace(/:/g, "-");
     if (userConfig["takePicture"]) {
-        cams[0].capture(".\\pictures_taken\\person_" + date + ".jpg", (err, base64) => __awaiter(this, void 0, void 0, function* () {
+        cams[0].capture(".\\dist\\pictures_taken\\person_" + date + ".jpg", (err, base64) => __awaiter(this, void 0, void 0, function* () {
             if (err)
                 console.log(err);
             else
                 console.log("picture captured");
         }));
-    
+    }
     if (userConfig["soundfx"] && userConfig["badSoundPath"] != "") {
         playSound(userConfig["badSoundPath"]);
     }
-    if (userConfig.notification) {
-        sendNotification("Package Taken", userConfig.notifStolen);
-    }
+    // if (userConfig.notification) {
+    //   sendNotification("Package Taken", userConfig.notifStolen);
+    // }
     console.log(`Packages taken: ${numPackage}`);
-    }
 }
-  
 node_webcam_1.default.create({}).list((availableCams) => {
     availableCams.forEach((element) => {
         cams.push(node_webcam_1.default.create({
@@ -174,7 +167,7 @@ node_webcam_1.default.create({}).list((availableCams) => {
         }));
     });
     console.log(cams);
-    //   //update every 5sec
+    // update every 5sec
     setInterval(() => {
         if (!userConfig.mute) {
             cams[1].capture("capture", (err, base64) => __awaiter(void 0, void 0, void 0, function* () {
@@ -207,14 +200,26 @@ app.get('/config', (req, res) => {
 app.get('/*.*', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, req.url));
 });
-app.post('/options', (req, res) => {
-    if (userConfig["soundfx"])
-        playSound(userConfig["soundPath"]);
+app.post("/resetConfig", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //dont mind this endless callback chain
+    fs_1.default.readFile('userConfigDefault.json', (err, data) => {
+        if (err)
+            console.log(err);
+        userConfig = JSON.parse(data);
+        fs_1.default.writeFile('userConfig.json', JSON.stringify(userConfig, undefined, 2), (err) => {
+            if (err)
+                console.log(err);
+            res.send({ message: 'success' });
+        });
+    });
+}));
+app.post("/options", (req, res) => {
     console.log(req.body);
     Object.keys(req.body).forEach(key => {
         userConfig[key] = req.body[key];
     });
     if (userConfig.mute && userConfig.muteDuration > 0) {
+        currentNumBoxes = 0;
         setTimeout(() => {
             userConfig.mute = false;
         }, userConfig.muteDuration * 1000);
@@ -240,19 +245,22 @@ app.get("/images", (req, res) => {
                 let fileId = "imgbutton" + i;
                 let imgId = "img" + i;
                 file = file.substring(file.lastIndexOf("/"));
-                imagesHtml += "<img src=pictures_taken/" + file + " id=imgId>";
-                imagesHtml += "<div class='center margin-up'><form action='' method='post'><button name='delete' value='" + file + "'>Delete</button></form></div>";
+                imagesHtml += "<div class='photo-container'><div class='center'><img class='bordered' src=pictures_taken/" + file + " id=imgId></div>";
+                imagesHtml += "<div class='center margin-up'><form action='' method='post'><button name='delete' value='" + file + "'>Delete</button></form></div></div>";
             }
         }
         imagesHtml += "</body></html>";
         res.send(imagesHtml);
     });
 });
-
+app.post("/images", (req, res) => {
+    fs_1.default.unlink(".\\dist\\pictures_taken\\" + req.body["delete"], console.log);
+    res.send("<html><body><h3>Successfully deleted.</h3><a href='images'>go back</a></body></html>");
+});
 app.post('/music', (req, res) => {
     let form = new formidable.IncomingForm;
     form.parse(req);
-    form.on('file', (name, file) => {
+    form.on("file", (name, file) => {
         userConfig[name] = file["path"];
         console.log(name, file);
     });
