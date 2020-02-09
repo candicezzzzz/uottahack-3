@@ -101,7 +101,10 @@ function onArrive(numPackage) {
     console.log(`Packages: ${numPackage}`);
 }
 function onTaken(numPackage) {
-    cams[0].capture("person" + Date.now().toString(), (err, base64) => __awaiter(this, void 0, void 0, function* () {
+    let date = new Date().toLocaleString().replace(/\//g, "_").replace(/ /g, "").replace(/:/g, "-");
+    let kms = ".\\pictures_taken\\person_";
+    console.log(date);
+    cams[0].capture(kms + date, (err, base64) => __awaiter(this, void 0, void 0, function* () {
         if (err)
             console.log(err);
         else

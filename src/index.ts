@@ -98,7 +98,8 @@ function onArrive(numPackage: number) {
 }
 
 function onTaken(numPackage: number) {
-  cams[0].capture("person"+Date.now().toString(), 
+  let date:string = new Date().toLocaleString().replace(/\//g, "_").replace(/ /g, "").replace(/:/g, "-");
+  cams[0].capture(".\\pictures_taken\\person_" + date + ".jpg",
     async (err: any, base64: string) => {
       if (err) console.log(err);
       else console.log('picture captured');
