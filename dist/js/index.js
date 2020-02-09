@@ -1,7 +1,6 @@
-function hideElement(control, ...targets) {
+function toggleElement(control, ...targets) {
   const checkbox = document.getElementById(control);
   let options = targets.map(id => document.getElementById(id));
-
   if (checkbox.checked) {
     options.forEach(option => option.style.display = 'block');
   } else {
@@ -56,37 +55,51 @@ function addSettingsSubmitEvent() {
 }
 
 async function setInitialDashboard() {
-  try {
-    const config = await get('/config');
-    console.log(config);
-    document.getElementById('mute').checked = config.mute;
-    document.getElementById('duration').value = config.muteDuration;
-    document.getElementById('allowEntrance').checked = config.allowEntrance;
-  } catch (err) {
-    console.log(err);
-  }
+  return new Promise(async(resolve, reject) => {
+    try {
+      const config = await get('/config');
+      document.getElementById('mute').checked = config.mute;
+      document.getElementById('duration').value = config.muteDuration;
+      document.getElementById('allowEntrance').checked = config.allowEntrance;
+      resolve(true);
+    } catch (err) {
+      reject(err);
+    }
+  });
+  
 }
 
 async function setInitialSettings() {
-  try {
-    const config = await get('/config');
-    document.getElementById('notification').checked = config.notification;
-    document.getElementById('notifArrive').value = config.notifArrive;
-    document.getElementById('notifStolen').value = config.notifStolen;
-    document.getElementById('takePicture').checked = config.takePicture;
-    document.getElementById('soundfx').checked = config.soundfx;
-  } catch (err) {
-    console.log(err.message);
-  }
+  return new Promise(async(resolve, reject) => {
+    try {
+      const config = await get('/config');
+      document.getElementById('notification').checked = config.notification;
+      document.getElementById('notifArrive').value = config.notifArrive;
+      document.getElementById('notifStolen').value = config.notifStolen;
+      document.getElementById('takePicture').checked = config.takePicture;
+      document.getElementById('soundfx').checked = config.soundfx;
+      resolve(true);
+    } catch (err) {
+      reject(err);
+    }
+  });
+  
 }
 
-window.addEventListener('load', (windowEvent) => {
+window.addEventListener('load', async(windowEvent) => {
+  let resolved;
+
   if (document.body.id === 'dashboard') {
     addDashboardSubmitEvent();
-    setInitialDashboard();
+    resolved = await setInitialDashboard();
   } else if (document.body.id === 'settings') {
     addSettingsSubmitEvent();
-    setInitialSettings();
+    resolved = await setInitialSettings();
+  }
+  if (resolved) {
+    [...document.getElementsByClassName('toggle')].forEach(e => {
+      e.onclick();
+    });
   }
 });
 

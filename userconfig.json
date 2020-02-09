@@ -6,7 +6,7 @@
   "takePicture": false,
   "notifArrive": "A package has arrived!",
   "notifStolen": "dear lord the package is being taken what do we do",
-  "soundfx": true,
+  "soundfx": false,
   "notification": true,
-  "mute": true
+  "mute": false
 }
