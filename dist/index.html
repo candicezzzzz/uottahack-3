@@ -22,21 +22,22 @@
       </nav>
     </div>
   </nav>
-  <body bgcolor = #e1f4f1>
+  <body style="background-color: #e1f4f1" id="dashboard">
     <h2 class= "title center">Dashboard presented by candycane1124</h2>
-  <form class="submission" action="/options" method="POST">
+  <form class="submission" id="dashboardForm">
       <ul>
         <li>
           <div class="center">
             <label for="mute" class="option">Mute</label>
           </div>
           <div class="center">
-            <input type="checkbox" onclick="update('mute', 'mute-options')" id="mute" name="mute">
-            <input type="hidden" onclick="update('mute', 'mute-options')" name="mute" value="false">
+            <input type="checkbox" 
+                   onclick="hideElement('mute', 'mute-options')" 
+                   id="mute">
           </div>
          <div id="mute-options" style="margin-top: 10px; margin-bottom: 10px;">
            <div class="center">
-              <select id="duration" name="muteDuration">
+              <select id="duration">
                 <option value="30">30 seconds</option>
                 <option value="60">1 minute</option>
                 <option value="300">5 minutes</option>
@@ -51,8 +52,7 @@
             <label for="allowEntrance" class="option">OPEN THE DOOR </label>
           </div>
           <div class="center">
-            <input type="checkbox" id="allowEntrance" name="allowEntrance" value="true">
-            <input type="hidden" name="allowEntrance" value="false">
+            <input type="checkbox" id="allowEntrance">
           </div>
         </li>
         <div class="center margin-up">

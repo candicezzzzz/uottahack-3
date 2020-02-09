@@ -16,6 +16,7 @@ require("dotenv-safe").config();
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const body_parser_1 = __importDefault(require("body-parser"));
+// import util from "util";
 const fs_1 = __importDefault(require("fs"));
 let userConfig;
 fs_1.default.readFile("userconfig.json", (err, data) => {
@@ -114,28 +115,25 @@ node_webcam_1.default.create({}).list((availableCams) => {
     });
     console.log(cams);
     // update every 5sec
-    setInterval(() => {
-        if (!userConfig.mute) {
-            cams[0].capture("capture", (err, base64) => __awaiter(void 0, void 0, void 0, function* () {
-                if (err)
-                    console.log(err);
-                if (base64) {
-                    // stupid package adds 23 stupid characters at the front
-                    // console.log(await getNumBoxes(base64.substring(23)));
-                    const numPackageDifference = yield getPackageDifference(base64.substring(23));
-                    if (numPackageDifference > 0) {
-                        onArrive(numPackageDifference);
-                    }
-                    else if (numPackageDifference < 0) {
-                        onTaken(-numPackageDifference);
-                    }
-                }
-                else {
-                    console.log("alsdkfjasdg undefined");
-                }
-            }));
-        }
-    }, 5000);
+    // setInterval(() => {
+    //   if (!userConfig.mute) {
+    //     cams[0].capture("capture", async (err: any, base64: string) => {
+    //       if (err) console.log(err);
+    //       if (base64) {
+    //         // stupid package adds 23 stupid characters at the front
+    //         // console.log(await getNumBoxes(base64.substring(23)));
+    //         const numPackageDifference = await getPackageDifference(base64.substring(23));
+    //         if (numPackageDifference > 0) {
+    //           onArrive(numPackageDifference);
+    //         } else if (numPackageDifference < 0) {
+    //           onTaken(-numPackageDifference);
+    //         }
+    //       } else {
+    //         console.log("alsdkfjasdg undefined");
+    //       }
+    //     });
+    //   }
+    // }, 5000);
 });
 ////////express stuff
 app.get('/', (req, res) => {
@@ -145,20 +143,22 @@ app.get('/*.*', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, req.url));
 });
 app.post('/options', (req, res) => {
-    // console.log(req.body);
-    Object.keys(req.body).forEach((key) => {
-        if ((req.body[key] === 'on') || (req.body[key] === 'true') || (Array.isArray(req.body[key]))) {
-            userConfig[key] = true;
-        }
-        else if (req.body[key] === 'false') {
-            userConfig[key] = false;
-        }
-        else {
-            userConfig[key] = req.body[key];
-        }
+    console.log(req.body);
+    // Object.keys(req.body).forEach((key) => {
+    //   if((req.body[key] === 'on') || (req.body[key] === 'true') 
+    //      || (Array.isArray(req.body[key]))) {
+    //     userConfig[key] = true;
+    //   } else if (req.body[key] === 'false') {
+    //     userConfig[key] = false;
+    //   } else {
+    //     userConfig[key] = req.body[key];
+    //   }
+    // });
+    Object.keys(req.body).forEach(key => {
+        userConfig[key] = req.body[key];
     });
     //this is so sketchy that idc about making it sketchier
-    if (userConfig.muteDuration > 0) {
+    if (userConfig.mute && userConfig.muteDuration > 0) {
         setTimeout(() => {
             userConfig.mute = false;
         }, userConfig.muteDuration * 1000);
