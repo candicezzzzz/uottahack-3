@@ -34,7 +34,7 @@
         <ul>
           <li>
             <div class="center">
-              <label for="notification">Notification</label>
+              <label for="notification">Notifications</label>
             </div>
             <div class="center">
               <input type="checkbox" 
@@ -81,17 +81,23 @@
             </div>
             <div id="soundupload">
               <div class="center">
-                <label for="soundPath">Sound effect to play</label>
+                <label for="goodSoundPath">Sound effect to play if package is left</label>
               </div>
               <div class="center">
-                <input type="file" id="soundPath" name="soundPath" accept="audio/*">
+                <input type="file" id="goodSoundPath" name="goodSoundPath" accept="audio/*">
+              </div>
+              <div class="center">
+                <label for="badSoundPath">Sound effect to play if package is taken</label>
+              </div>
+              <div class="center">
+                <input type="file" id="badSoundPath" name="badSoundPath" accept="audio/*">
               </div>
             </div>
           </li>
           <li>
             <div class="center">
               <label for="takePicture">
-                Take a picture of the person (if package taken)
+                Take a picture of the person who took your package
               </label>
             </div>
             <div class="center">

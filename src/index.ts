@@ -18,8 +18,8 @@ fs.readFile("userconfig.json", (err: any, data: any) => {
 // process the forms passed
 const formidable: any =  require("formidable");
 
-// used for music
-// const neko = require('sound-play');
+// used for music (mplayer must be a system environment variable)
+const neko: any = require("play-sound")({player: "mplayer"});
 
 const app: express.Application = express();
 app.use(bodyParser.json());
@@ -92,31 +92,39 @@ async function getPackageDifference(imageData: string): Promise<number> {
 // }
 // test();
 
+function playSound(filePath: string): void {
+  neko.play(filePath, (err: any) => {
+    if (err) console.log(`${err}`);
+  });
+}
 
-function onArrive(numPackage: number) {
+let cams: Array<any> = [];
+
+function onArrive(numPackage: number): void {
   console.log(`Packages: ${numPackage}`);
+
+  if (userConfig["soundfx"] && userConfig["goodSoundPath"] != "") {
+    playSound(userConfig["goodSoundPath"]);
+  }
 }
 
 function onTaken(numPackage: number) {
   let date:string = new Date().toLocaleString().replace(/\//g, "_").replace(/ /g, "").replace(/:/g, "-");
-  cams[0].capture(".\\dist\\pictures_taken\\person_" + date + ".jpg",
-    async (err: any, base64: string) => {
-      if (err) console.log(err);
-      else console.log('picture captured');
-  });
+
+  if (userConfig["takePicture"]) {
+    cams[0].capture(".\\dist\\pictures_taken\\person_" + date + ".jpg",
+      async (err: any, base64: string) => {
+        if (err) console.log(err);
+        else console.log('picture captured');
+    });
+  }
+
+  if (userConfig["soundfx"] && userConfig["badSoundPath"] != "") {
+    playSound(userConfig["badSoundPath"]);
+  }
+  
   console.log(`Packages taken: ${numPackage}`);
 }
-
-// async function playSound(filePath: string) {
-//   try {
-//     await neko.play(filePath);
-//   } catch(error) {
-//     throw error;
-//   }
-// }
-
-
-let cams: Array<any> = [];
 
 NodeCam.create({}).list((availableCams: Array<any>) => {
   availableCams.forEach((element: any) => {
@@ -135,30 +143,28 @@ NodeCam.create({}).list((availableCams: Array<any>) => {
     );
   });  
   console.log(cams);
+//   //update every 5sec
+  setInterval(() => {
+    if (!userConfig.mute) {
+      cams[1].capture("capture", async (err: any, base64: string) => {
+        if (err) console.log(err);
+        if (base64) {
+          // stupid package adds 23 stupid characters at the front
 
-  // update every 5sec
-  // setInterval(() => {
-  //   if (!userConfig.mute) {
-  //     cams[1].capture("capture", async (err: any, base64: string) => {
-  //       if (err) console.log(err);
-  //       if (base64) {
-  //         // stupid package adds 23 stupid characters at the front
+          const numPackageDifference = await getPackageDifference(base64.substring(23));
+          if (numPackageDifference > 0) {
+            onArrive(numPackageDifference);
+          } else if (numPackageDifference < 0) {
+            onTaken(-numPackageDifference);
+          }
 
-  //         const numPackageDifference = await getPackageDifference(base64.substring(23));
-  //         if (numPackageDifference > 0) {
-  //           onArrive(numPackageDifference);
-  //         } else if (numPackageDifference < 0) {
-  //           onTaken(-numPackageDifference);
-  //         }
-
-  //       } else {
-  //         console.log("alsdkfjasdg undefined");
-  //       }
-  //     });
-  //   }
-  // }, 5000);
+        } else {
+          console.log("alsdkfjasdg undefined");
+        }
+      });
+    }
+  }, 5000);
 });
-
 
 
 ////////express stuff
@@ -176,6 +182,7 @@ app.get('/*.*', (req: any, res: any) => {
 });
 
 app.post('/options', (req: any, res: any) => {
+  if (userConfig["soundfx"]) playSound(userConfig["soundPath"]);
   console.log(req.body);
   Object.keys(req.body).forEach(key => {
     userConfig[key] = req.body[key];
@@ -194,6 +201,7 @@ app.post('/options', (req: any, res: any) => {
                (err: any) => {
     if (err) console.log(err);
   });
+
   res.send({message: 'success'});
 });
 

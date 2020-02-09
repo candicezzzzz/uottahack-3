@@ -1,0 +1,12 @@
+{
+  "muteDuration": 0,
+  "allowEntrance": false,
+  "goodSoundPath": "",
+  "badSoundPath": "",
+  "takePicture": false,
+  "notifArrive": "A package has arrived!",
+  "notifStolen": "dear lord the package is being taken what do we do",
+  "soundfx": false,
+  "notification": true,
+  "mute": false
+}

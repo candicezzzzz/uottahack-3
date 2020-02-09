@@ -27,8 +27,8 @@ fs_1.default.readFile("userconfig.json", (err, data) => {
 // const userConfig = JSON.parse(fs.readFile('userconfig.json'));
 // process the forms passed
 const formidable = require("formidable");
-// used for music
-// const neko = require('sound-play');
+// used for music (mplayer must be a system environment variable)
+const neko = require("play-sound")({ player: "mplayer" });
 const app = express_1.default();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
@@ -97,27 +97,34 @@ function getPackageDifference(imageData) {
 //   }
 // }
 // test();
+function playSound(filePath) {
+    neko.play(filePath, (err) => {
+        if (err)
+            console.log(`${err}`);
+    });
+}
+let cams = [];
 function onArrive(numPackage) {
     console.log(`Packages: ${numPackage}`);
+    if (userConfig["soundfx"] && userConfig["goodSoundPath"] != "") {
+        playSound(userConfig["goodSoundPath"]);
+    }
 }
 function onTaken(numPackage) {
     let date = new Date().toLocaleString().replace(/\//g, "_").replace(/ /g, "").replace(/:/g, "-");
-    cams[0].capture(".\\dist\\pictures_taken\\person_" + date + ".jpg", (err, base64) => __awaiter(this, void 0, void 0, function* () {
-        if (err)
-            console.log(err);
-        else
-            console.log('picture captured');
-    }));
+    if (userConfig["takePicture"]) {
+        cams[0].capture(".\\dist\\pictures_taken\\person_" + date + ".jpg", (err, base64) => __awaiter(this, void 0, void 0, function* () {
+            if (err)
+                console.log(err);
+            else
+                console.log('picture captured');
+        }));
+    }
+    if (userConfig["soundfx"] && userConfig["badSoundPath"] != "") {
+        playSound(userConfig["badSoundPath"]);
+    }
     console.log(`Packages taken: ${numPackage}`);
 }
-// async function playSound(filePath: string) {
-//   try {
-//     await neko.play(filePath);
-//   } catch(error) {
-//     throw error;
-//   }
-// }
-let cams = [];
 node_webcam_1.default.create({}).list((availableCams) => {
     availableCams.forEach((element) => {
         cams.push(node_webcam_1.default.create({
@@ -133,25 +140,28 @@ node_webcam_1.default.create({}).list((availableCams) => {
         }));
     });
     console.log(cams);
-    // update every 5sec
-    // setInterval(() => {
-    //   if (!userConfig.mute) {
-    //     cams[1].capture("capture", async (err: any, base64: string) => {
-    //       if (err) console.log(err);
-    //       if (base64) {
-    //         // stupid package adds 23 stupid characters at the front
-    //         const numPackageDifference = await getPackageDifference(base64.substring(23));
-    //         if (numPackageDifference > 0) {
-    //           onArrive(numPackageDifference);
-    //         } else if (numPackageDifference < 0) {
-    //           onTaken(-numPackageDifference);
-    //         }
-    //       } else {
-    //         console.log("alsdkfjasdg undefined");
-    //       }
-    //     });
-    //   }
-    // }, 5000);
+    //   //update every 5sec
+    setInterval(() => {
+        if (!userConfig.mute) {
+            cams[1].capture("capture", (err, base64) => __awaiter(void 0, void 0, void 0, function* () {
+                if (err)
+                    console.log(err);
+                if (base64) {
+                    // stupid package adds 23 stupid characters at the front
+                    const numPackageDifference = yield getPackageDifference(base64.substring(23));
+                    if (numPackageDifference > 0) {
+                        onArrive(numPackageDifference);
+                    }
+                    else if (numPackageDifference < 0) {
+                        onTaken(-numPackageDifference);
+                    }
+                }
+                else {
+                    console.log("alsdkfjasdg undefined");
+                }
+            }));
+        }
+    }, 5000);
 });
 ////////express stuff
 app.get('/', (req, res) => {
@@ -164,6 +174,8 @@ app.get('/*.*', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, req.url));
 });
 app.post('/options', (req, res) => {
+    if (userConfig["soundfx"])
+        playSound(userConfig["soundPath"]);
     console.log(req.body);
     Object.keys(req.body).forEach(key => {
         userConfig[key] = req.body[key];
