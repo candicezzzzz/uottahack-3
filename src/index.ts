@@ -136,26 +136,26 @@ NodeCam.create({}).list((availableCams: Array<any>) => {
   console.log(cams);
 
   // update every 5sec
-  setInterval(() => {
-    if (!userConfig.mute) {
-      cams[1].capture("capture", async (err: any, base64: string) => {
-        if (err) console.log(err);
-        if (base64) {
-          // stupid package adds 23 stupid characters at the front
+  // setInterval(() => {
+  //   if (!userConfig.mute) {
+  //     cams[1].capture("capture", async (err: any, base64: string) => {
+  //       if (err) console.log(err);
+  //       if (base64) {
+  //         // stupid package adds 23 stupid characters at the front
 
-          const numPackageDifference = await getPackageDifference(base64.substring(23));
-          if (numPackageDifference > 0) {
-            onArrive(numPackageDifference);
-          } else if (numPackageDifference < 0) {
-            onTaken(-numPackageDifference);
-          }
+  //         const numPackageDifference = await getPackageDifference(base64.substring(23));
+  //         if (numPackageDifference > 0) {
+  //           onArrive(numPackageDifference);
+  //         } else if (numPackageDifference < 0) {
+  //           onTaken(-numPackageDifference);
+  //         }
 
-        } else {
-          console.log("alsdkfjasdg undefined");
-        }
-      });
-    }
-  }, 5000);
+  //       } else {
+  //         console.log("alsdkfjasdg undefined");
+  //       }
+  //     });
+  //   }
+  // }, 5000);
 });
 
 
@@ -164,6 +164,10 @@ NodeCam.create({}).list((availableCams: Array<any>) => {
 
 app.get('/', (req: any, res: any) => {
   res.sendFile(path.join(__dirname, "index.html"));
+});
+
+app.get('/config', (req: any, res: any) => {
+  res.send(userConfig);
 });
 
 app.get('/*.*', (req: any, res: any) => {
@@ -184,7 +188,9 @@ app.post('/options', (req: any, res: any) => {
 
   console.log(userConfig);
 
-  fs.writeFile("./userconfig.json", JSON.stringify(userConfig), (err: any) => {
+  fs.writeFile("./userconfig.json", 
+               JSON.stringify(userConfig, undefined, 2), 
+               (err: any) => {
     if (err) console.log(err);
   });
   res.send({message: 'success'});
@@ -194,17 +200,17 @@ app.post('/settings', (req: any, res: any) => {
   let form: any  = new formidable.IncomingForm;
   form.parse(req);
 
-  form.on('field', (name: any, field: any) => {
-    if((field ==='on') || (field === 'true')) {
-      userConfig[name] = true;
-    } else if (field === 'false') {
-      userConfig[name] = false;
-    } else {
-      userConfig[name] = field;
-    }
+  // form.on('field', (name: any, field: any) => {
+  //   if((field === 'on') || (field === 'true')) {
+  //     userConfig[name] = true;
+  //   } else if (field === 'false') {
+  //     userConfig[name] = false;
+  //   } else {
+  //     userConfig[name] = field;
+  //   }
 
-    console.log(name, field);
-  });
+  //   console.log(name, field);
+  // });
 
   form.on('file', (name: any, file: any) => {
     userConfig[name] = file["path"];
@@ -214,12 +220,8 @@ app.post('/settings', (req: any, res: any) => {
   form.on('error', (err: any) => {
     throw err;
   });
-  
-  form.on('end', () => {
-    res.end();
-  });
-  
-  res.send('Saved');
+  // res.send({message: 'success'});
+  res.sendFile(path.join(__dirname, 'settings.html'));
 });
 
 const port: number = 3000;

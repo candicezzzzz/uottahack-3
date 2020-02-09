@@ -133,31 +133,31 @@ node_webcam_1.default.create({}).list((availableCams) => {
     });
     console.log(cams);
     // update every 5sec
-    setInterval(() => {
-        if (!userConfig.mute) {
-            cams[1].capture("capture", (err, base64) => __awaiter(void 0, void 0, void 0, function* () {
-                if (err)
-                    console.log(err);
-                if (base64) {
-                    // stupid package adds 23 stupid characters at the front
-                    const numPackageDifference = yield getPackageDifference(base64.substring(23));
-                    if (numPackageDifference > 0) {
-                        onArrive(numPackageDifference);
-                    }
-                    else if (numPackageDifference < 0) {
-                        onTaken(-numPackageDifference);
-                    }
-                }
-                else {
-                    console.log("alsdkfjasdg undefined");
-                }
-            }));
-        }
-    }, 5000);
+    // setInterval(() => {
+    //   if (!userConfig.mute) {
+    //     cams[1].capture("capture", async (err: any, base64: string) => {
+    //       if (err) console.log(err);
+    //       if (base64) {
+    //         // stupid package adds 23 stupid characters at the front
+    //         const numPackageDifference = await getPackageDifference(base64.substring(23));
+    //         if (numPackageDifference > 0) {
+    //           onArrive(numPackageDifference);
+    //         } else if (numPackageDifference < 0) {
+    //           onTaken(-numPackageDifference);
+    //         }
+    //       } else {
+    //         console.log("alsdkfjasdg undefined");
+    //       }
+    //     });
+    //   }
+    // }, 5000);
 });
 ////////express stuff
 app.get('/', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "index.html"));
+});
+app.get('/config', (req, res) => {
+    res.send(userConfig);
 });
 app.get('/*.*', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, req.url));
@@ -173,7 +173,7 @@ app.post('/options', (req, res) => {
         }, userConfig.muteDuration * 1000);
     }
     console.log(userConfig);
-    fs_1.default.writeFile("./userconfig.json", JSON.stringify(userConfig), (err) => {
+    fs_1.default.writeFile("./userconfig.json", JSON.stringify(userConfig, undefined, 2), (err) => {
         if (err)
             console.log(err);
     });
@@ -182,18 +182,16 @@ app.post('/options', (req, res) => {
 app.post('/settings', (req, res) => {
     let form = new formidable.IncomingForm;
     form.parse(req);
-    form.on('field', (name, field) => {
-        if ((field === 'on') || (field === 'true')) {
-            userConfig[name] = true;
-        }
-        else if (field === 'false') {
-            userConfig[name] = false;
-        }
-        else {
-            userConfig[name] = field;
-        }
-        console.log(name, field);
-    });
+    // form.on('field', (name: any, field: any) => {
+    //   if((field === 'on') || (field === 'true')) {
+    //     userConfig[name] = true;
+    //   } else if (field === 'false') {
+    //     userConfig[name] = false;
+    //   } else {
+    //     userConfig[name] = field;
+    //   }
+    //   console.log(name, field);
+    // });
     form.on('file', (name, file) => {
         userConfig[name] = file["path"];
         console.log(name, file);
@@ -201,10 +199,8 @@ app.post('/settings', (req, res) => {
     form.on('error', (err) => {
         throw err;
     });
-    form.on('end', () => {
-        res.end();
-    });
-    res.send('Saved');
+    // res.send({message: 'success'});
+    res.sendFile(path_1.default.join(__dirname, 'settings.html'));
 });
 const port = 3000;
 app.listen(port, () => {

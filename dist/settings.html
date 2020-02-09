@@ -25,7 +25,7 @@
   </nav>
   <body id="settings">
     <h1 class="center title">Settings</h1>
-    <form id="settingsForm" class="form">
+    <form id="settingsForm" class="form" enctype="multipart/form-data" method="POST" action="/settings">
     <!-- <form id="settingsForm" class="form" enctype="multipart/form-data"> -->
       <ul>
         <li>
@@ -79,7 +79,7 @@
               <label for="soundPath">Sound Effect to play</label>
             </div>
             <div class="center">
-              <input type="file" id="soundPath" accept="audio/*">
+              <input type="file" name="soundPath" id="soundPath" accept="audio/*">
             </div>
           </div>
         </li>
