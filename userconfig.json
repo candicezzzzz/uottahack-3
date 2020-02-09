@@ -6,6 +6,6 @@
   "notifArrive": "A package has arrived!",
   "notifStolen": "Dear lord the package is being taken what do we do",
   "soundfx": true,
-  "notification": false,
+  "notification": true,
   "mute": false
 }

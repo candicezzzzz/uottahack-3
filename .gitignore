@@ -2,6 +2,7 @@ node_modules/
 .vscode/
 .env
 uOttoKey.json
+uOttoFirebaseKey.json
 boxes/
 capture.jpg
 *.map
