@@ -207,6 +207,7 @@ app.post("/options", (req: any, res: any) => {
   });
 
   if (userConfig.mute && userConfig.muteDuration > 0) {
+    currentNumBoxes = 0;
     setTimeout(() => {
       userConfig.mute = false;
     }, userConfig.muteDuration * 1000);
