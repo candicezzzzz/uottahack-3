@@ -11,11 +11,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv-safe").config();
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const admin = __importStar(require("firebase-admin"));
+admin.initializeApp({
+    credential: admin.credential.cert("./uOttoFirebaseKey.json")
+});
 // import util from "util";
 const fs_1 = __importDefault(require("fs"));
 let userConfig;
@@ -38,12 +49,23 @@ const client = new vision_1.default.ImageAnnotatorClient();
 // @ts-ignore
 const node_webcam_1 = __importDefault(require("node-webcam"));
 const possibleOptions = [
-    'Box',
-    'Packaged goods',
-    'Boxed packaged goods',
-    'Shipping box'
+    "Box",
+    "Packaged goods",
+    "Boxed packaged goods",
+    "Shipping box"
 ];
 let currentNumBoxes = 0;
+function sendNotification(title, body) {
+    admin.messaging().send({
+        notification: {
+            title: title,
+            body: body
+        },
+        token: process.env.KEVINS_PHONE_TOKEN_LOL_TEST
+    }).then((response) => {
+        console.log(response);
+    }).catch(console.log);
+}
 function getNumBoxes(imageData) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
@@ -53,7 +75,7 @@ function getNumBoxes(imageData) {
                 });
                 const objects = results.localizedObjectAnnotations;
                 let numBoxes = 0;
-                objects.forEach((object) => {
+                objects.forEach(object => {
                     console.log(object.name);
                     if (possibleOptions.indexOf(object.name) != -1) {
                         ++numBoxes;
@@ -98,16 +120,26 @@ function getPackageDifference(imageData) {
 // }
 // test();
 function onArrive(numPackage) {
+    if (userConfig.notification) {
+        sendNotification("Package Arrived", userConfig.notifArrive);
+    }
     console.log(`Packages: ${numPackage}`);
 }
 function onTaken(numPackage) {
-    let date = new Date().toLocaleString().replace(/\//g, "_").replace(/ /g, "").replace(/:/g, "-");
-    cams[0].capture(".\\dist\\pictures_taken\\person_" + date + ".jpg", (err, base64) => __awaiter(this, void 0, void 0, function* () {
+    let date = new Date()
+        .toLocaleString()
+        .replace(/\//g, "_")
+        .replace(/ /g, "")
+        .replace(/:/g, "-");
+    cams[0].capture(".\\pictures_taken\\person_" + date + ".jpg", (err, base64) => __awaiter(this, void 0, void 0, function* () {
         if (err)
             console.log(err);
         else
-            console.log('picture captured');
+            console.log("picture captured");
     }));
+    if (userConfig.notification) {
+        sendNotification("Package Taken", userConfig.notifStolen);
+    }
     console.log(`Packages taken: ${numPackage}`);
 }
 // async function playSound(filePath: string) {
@@ -154,7 +186,7 @@ node_webcam_1.default.create({}).list((availableCams) => {
     // }, 5000);
 });
 ////////express stuff
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "index.html"));
 });
 app.get('/config', (req, res) => {
@@ -178,10 +210,10 @@ app.post('/options', (req, res) => {
         if (err)
             console.log(err);
     });
-    res.send({ message: 'success' });
+    res.send({ message: "success" });
 });
 app.get("/images", (req, res) => {
-    let imagesHtml = "<!DOCTYPE html><html><head><meta charset='utc-8'><link rel='stylesheet' type='text/css' href='css/images.css'><script src='js/index.js'></script></head><nav class='nav header'><div><nav class='navbar-right'><ul class='nav-options'><li class='nav-option'><a href='index.html'>Home</a></li><li class='nav-option'><a href='about.html'>About</a></li><li class='nav-option'><a href='settings.html'>Settings</a></li><li class='nav-option'><a href='/images'>Images</a></li></ul></nav></div></nav><body><div>";
+    let imagesHtml = "<!DOCTYPE html><html><head><meta charset='utc-8'><link rel='stylesheet' type='text/css' href='css/images.css'><script src='js/index.js'></script></head><nav class='nav header'><div><nav class='navbar-right'><ul class='nav-options'><li class='nav-option'><a href='index.html'>Home</a></li><li class='nav-option'><a href='about.html'>About</a></li><li class='nav-option'><a href='settings.html'>Settings</a></li><li class='nav-option'><a href='/images'>Images</a></li></ul></nav></div></nav><body><script>function deleteImg(control, imageId) {fs.unlinkSync(document.getElementById(imageId).src);}</script><div>";
     fs_1.default.readdir("./dist/pictures_taken", (err, files) => {
         if (err)
             console.log(err);
@@ -189,16 +221,20 @@ app.get("/images", (req, res) => {
             imagesHtml += "<h1>empty folder</h1>";
         }
         else {
-            files.forEach((file) => {
+            for (let i = 0; i < files.length; i++) {
+                let file = files[i];
+                let fileId = "imgbutton" + i;
+                let imgId = "img" + i;
                 file = file.substring(file.lastIndexOf("/"));
-                imagesHtml += "<img src=pictures_taken/" + file + ">";
-            });
+                imagesHtml += "<img src=pictures_taken/" + file + " id=imgId>";
+                imagesHtml += "<div class='center margin-up'><form action='' method='post'><button name='delete' value='" + file + "'>Delete</button></form></div>";
+            }
         }
         imagesHtml += "</body></html>";
-        console.log(imagesHtml);
         res.send(imagesHtml);
     });
 });
+
 app.post('/music', (req, res) => {
     let form = new formidable.IncomingForm;
     form.parse(req);
@@ -206,7 +242,7 @@ app.post('/music', (req, res) => {
         userConfig[name] = file["path"];
         console.log(name, file);
     });
-    form.on('error', (err) => {
+    form.on("error", (err) => {
         throw err;
     });
     res.send({ message: 'success' });

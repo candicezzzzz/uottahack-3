@@ -7,5 +7,5 @@
   "notifStolen": "dear lord the package is being taken what do we do",
   "soundfx": false,
   "notification": true,
-  "mute": true
+  "mute": false
 }
