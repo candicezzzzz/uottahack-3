@@ -122,7 +122,7 @@ function onTaken(numPackage: number) {
     .replace(/ /g, "")
     .replace(/:/g, "-");
   cams[0].capture(
-    ".\\pictures_taken\\person_" + date + ".jpg",
+    ".\\dist\\pictures_taken\\person_" + date + ".jpg",
     async (err: any, base64: string) => {
       if (err) console.log(err);
       else console.log("picture captured");
@@ -192,7 +192,11 @@ app.get("/", (req: any, res: any) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.get("/*.*", (req: any, res: any) => {
+app.get('/config', (req: any, res: any) => {
+  res.send(userConfig);
+});
+
+app.get('/*.*', (req: any, res: any) => {
   res.sendFile(path.join(__dirname, req.url));
 });
 
@@ -210,27 +214,37 @@ app.post("/options", (req: any, res: any) => {
 
   console.log(userConfig);
 
-  fs.writeFile("./userconfig.json", JSON.stringify(userConfig), (err: any) => {
+  fs.writeFile("./userconfig.json", 
+               JSON.stringify(userConfig, undefined, 2), 
+               (err: any) => {
     if (err) console.log(err);
   });
   res.send({ message: "success" });
 });
 
-app.post("/settings", (req: any, res: any) => {
-  let form: any = new formidable.IncomingForm();
+app.get("/images", (req:any, res:any) => {
+  let imagesHtml:string = "<!DOCTYPE html><html><head><meta charset='utc-8'><link rel='stylesheet' type='text/css' href='css/images.css'><script src='js/index.js'></script></head><nav class='nav header'><div><nav class='navbar-right'><ul class='nav-options'><li class='nav-option'><a href='index.html'>Home</a></li><li class='nav-option'><a href='about.html'>About</a></li><li class='nav-option'><a href='settings.html'>Settings</a></li><li class='nav-option'><a href='/images'>Images</a></li></ul></nav></div></nav><body><div>";
+  fs.readdir("./dist/pictures_taken", (err:any, files:string[]) => {
+    if (err) console.log(err);
+    if (files.length == 0) {
+      imagesHtml += "<h1>empty folder</h1>";
+    } else {
+      files.forEach((file:string) => {
+        file = file.substring(file.lastIndexOf("/"));
+        imagesHtml += "<img src=pictures_taken/" + file + ">";
+      });
+    }
+    imagesHtml += "</body></html>";
+    console.log(imagesHtml);
+    res.send(imagesHtml);
+  });
+  
+});
+  
+app.post('/music', (req: any, res: any) => {
+  let form: any  = new formidable.IncomingForm;
   form.parse(req);
 
-  form.on("field", (name: any, field: any) => {
-    if (field === "on" || field === "true") {
-      userConfig[name] = true;
-    } else if (field === "false") {
-      userConfig[name] = false;
-    } else {
-      userConfig[name] = field;
-    }
-
-    console.log(name, field);
-  });
 
   form.on("file", (name: any, file: any) => {
     userConfig[name] = file["path"];
@@ -240,12 +254,7 @@ app.post("/settings", (req: any, res: any) => {
   form.on("error", (err: any) => {
     throw err;
   });
-
-  form.on("end", () => {
-    res.end();
-  });
-
-  res.send("Saved");
+  res.send({message: 'success'});
 });
 
 const port: number = 3000;

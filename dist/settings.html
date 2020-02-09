@@ -20,88 +20,91 @@
             <a href="settings.html">Settings</a>
           </li>
           <li class="nav-option">
-            <a href="images.html">Images</a>
+            <a href="/images">Images</a>
           </li>
         </ul>
       </nav>
     </div>
   </nav>
   <body id="settings">
-    <h1 class="center title">Settings</h1>
-    <form id="settingsForm" class="form">
-    <!-- <form id="settingsForm" class="form" enctype="multipart/form-data"> -->
-      <ul>
-        <li>
-          <div class="center">
-            <label for="notification">Notification</label>
-          </div>
-          <div class="center">
-            <input type="checkbox" 
-                   id="notification"
-                   onclick="hideElement('notification', 'arrive', 'stolen')" 
-                   value="true">
-          </div>
-          <div id="arrive">
+    <div class="background-image-1">
+      <h1 class="center title">Settings</h1>
+      <form id="settingsForm" class="form">
+      <!-- <form id="settingsForm" class="form" enctype="multipart/form-data"> -->
+        <ul>
+          <li>
             <div class="center">
-              <label for="notifArrive" 
-                     class="small-label">Message to be sent when a package arrives</label>
+              <label for="notification">Notification</label>
             </div>
             <div class="center">
-              <input type="text" 
-                     size="50" 
-                     id="notifArrive" 
-                     value="A package has arrived!">
+              <input type="checkbox" 
+                    id="notification"
+                    onclick="hideElement('notification', 'arrive', 'stolen')" 
+                    checked="true"
+                    value="true">
             </div>
-          </div>
-          <div id="stolen">
+            <div id="arrive">
+              <div class="center">
+                <label for="notifArrive" 
+                      class="small-label">Message to be sent when a package arrives</label>
+              </div>
+              <div class="center">
+                <input type="text" 
+                      size="50" 
+                      id="notifArrive" 
+                      value="A package has arrived!">
+              </div>
+            </div>
+            <div id="stolen">
+              <div class="center">
+                <label for="notifStolen" class="small-label">
+                  Message to be sent when a package is taken
+                </label>
+              </div>
+              <div class="center">
+                <input type="text" 
+                      size="50" 
+                      id="notifStolen" 
+                      value="dear lord the package is being taken what do we do">
+              </div>
+            </div>
+          </li>
+          <li>
             <div class="center">
-              <label for="notifStolen" class="small-label">
-                Message to be sent when a package is taken
+              <label for="soundfx">Should a sound effect play?</label>
+            </div>
+            <div class="center">
+              <input type="checkbox" 
+                    id="soundfx" 
+                    onclick="hideElement('soundfx', 'soundupload')" 
+                    value="true">
+            </div>
+            <div id="soundupload">
+              <div class="center">
+                <label for="soundPath">Sound effect to play</label>
+              </div>
+              <div class="center">
+                <input type="file" id="soundPath" name="soundPath" accept="audio/*">
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="center">
+              <label for="takePicture">
+                Take a picture of the person (if package taken)
               </label>
             </div>
             <div class="center">
-              <input type="text" 
-                     size="50" 
-                     id="notifStolen" 
-                     value="dear lord the package is being taken what do we do">
+              <input type="checkbox" id="takePicture" value="true" checked="true">
             </div>
-          </div>
-        </li>
-        <li>
-          <div class="center">
-            <label for="soundfx">Should Sound Effect play?</label>
-          </div>
-          <div class="center">
-            <input type="checkbox" 
-                   id="soundfx" 
-                   onclick="hideElement('soundfx', 'soundupload')" 
-                   value="true">
-          </div>
-          <div id="soundupload">
-            <div class="center">
-              <label for="sound">Sound Effect to play</label>
+          </li>
+          <li>
+            <div class="center margin-up">
+              <button type="submit">Save</button>
             </div>
-            <div class="center">
-              <input type="file" id="sound" accept="audio/*">
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="center">
-            <label for="takePicture">
-              Take a picture of the person (if package taken)
-            </label>
-          </div>
-          <div class="center">
-            <input type="checkbox" id="takePicture" value="true">
-          </div>
-        </li>
-        <li>
-          <div class="center margin-up">
-            <button type="submit">Save</button>
-          </div>
-        </li>
-      </ul>
-    </form>
+          </li>
+        </ul>
+      </form>
+    </div>
   </body>
 </html>

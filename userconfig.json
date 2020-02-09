@@ -1,10 +1,10 @@
 {
-  "muteDuration": 30,
-  "allowEntrance": false,
-  "soundPath": "C:\\fakepath\\Maroon 5 - Payphone (CDQ) Feat. Wiz Khalifa [Single] [2012]- Sebastian[Ub3r].mp3",
+  "muteDuration": 0,
+  "allowEntrance": true,
+  "soundPath": "",
   "takePicture": false,
-  "notifArrive": "A package has arrived!",
-  "notifStolen": "Dear lord the package is being taken what do we do",
+  "notifArrive": "A package has arrived!sdfljsldfkj",
+  "notifStolen": "dear lord the package is being taken what do we do",
   "soundfx": true,
   "notification": true,
   "mute": false
