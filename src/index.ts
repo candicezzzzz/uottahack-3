@@ -152,21 +152,10 @@ app.get('/*.*', (req: any, res: any) => {
 
 app.post('/options', (req: any, res: any) => {
   console.log(req.body);
-  // Object.keys(req.body).forEach((key) => {
-  //   if((req.body[key] === 'on') || (req.body[key] === 'true') 
-  //      || (Array.isArray(req.body[key]))) {
-  //     userConfig[key] = true;
-  //   } else if (req.body[key] === 'false') {
-  //     userConfig[key] = false;
-  //   } else {
-  //     userConfig[key] = req.body[key];
-  //   }
-  // });
   Object.keys(req.body).forEach(key => {
     userConfig[key] = req.body[key];
   });
 
-  //this is so sketchy that idc about making it sketchier
   if (userConfig.mute && userConfig.muteDuration > 0) {
     setTimeout(() => {
       userConfig.mute = false;
@@ -178,7 +167,7 @@ app.post('/options', (req: any, res: any) => {
   fs.writeFile("./userconfig.json", JSON.stringify(userConfig), (err: any) => {
     if (err) console.log(err);
   });
-  res.send('Saved');
+  res.send({message: 'success'});
 });
 
 const port: number = 3000;
