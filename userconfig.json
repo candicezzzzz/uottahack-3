@@ -1,1 +1,11 @@
-{"muteDuration":"60","allowEntrance":false,"packageArriveMsg":"A package has arrived!","packageTakenMsg":"Dear lord the package is being taken what do we do","playSound":false,"soundPath":"","takePicture":false,"notifArrive":"A package has arrived!","notifStolen":"Dear lord the package is being taken what do we do","soundfx":false,"notification":false,"mute":true}
+{
+  "muteDuration": "30",
+  "allowEntrance": false,
+  "soundPath": "",
+  "takePicture": false,
+  "notifArrive": "A package has arrived!",
+  "notifStolen": "Dear lord the package is being taken what do we do",
+  "soundfx": false,
+  "notification": false,
+  "mute": true
+}

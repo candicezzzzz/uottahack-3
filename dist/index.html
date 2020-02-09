@@ -24,20 +24,19 @@
   </nav>
   <body bgcolor = #e1f4f1>
     <h2 class= "title center">Dashboard presented by candycane1124</h2>
-    <form class="submission" action="/options" method="POST">
+  <form class="submission" action="/options" method="POST">
       <ul>
         <li>
           <div class="center">
             <label for="mute" class="option">Mute</label>
           </div>
           <div class="center">
-            <input type="checkbox" onclick="update('mute', 'mute-options')" id="mute" name="mute" value="true">
+            <input type="checkbox" onclick="update('mute', 'mute-options')" id="mute" name="mute">
             <input type="hidden" onclick="update('mute', 'mute-options')" name="mute" value="false">
           </div>
          <div id="mute-options" style="margin-top: 10px; margin-bottom: 10px;">
            <div class="center">
               <select id="duration" name="muteDuration">
-                <option value="0">Duration:</option>
                 <option value="30">30 seconds</option>
                 <option value="60">1 minute</option>
                 <option value="300">5 minutes</option>

@@ -4,12 +4,11 @@ import express from "express";
 import path from "path";
 import bodyParser from "body-parser";
 
-const util = require("util");
-
-const fs = require('fs');
+// import util from "util";
+import fs from 'fs';
 
 let userConfig: any;
-fs.readFile("userconfig.json", (err: any, data: string) => {
+fs.readFile("userconfig.json", (err: any, data: any) => {
   if (err) console.log(err);
   userConfig = JSON.parse(data);
 });
@@ -26,10 +25,12 @@ const client: any = new vision.ImageAnnotatorClient();
 // @ts-ignore
 import NodeCam from "node-webcam";
 
-const possibleOptions = ['Box', 'Packaged goods', 'Boxed packaged goods'];
-
+const possibleOptions: Array<String> = [
+  'Box', 
+  'Packaged goods', 
+  'Boxed packaged goods'
+];
 let currentNumBoxes: number = 0;
-let muted: boolean = false;
 
 async function getNumBoxes(imageData: string): Promise<number> {
   return new Promise(async (resolve, reject) => {
@@ -115,7 +116,7 @@ NodeCam.create({}).list((availableCams: Array<any>) => {
 
   // update every 5sec
   setInterval(() => {
-    if (!muted) {
+    if (!userConfig.mute) {
       cams[0].capture("capture", async (err: any, base64: string) => {
         if (err) console.log(err);
         if (base64) {
@@ -150,24 +151,30 @@ app.get('/*.*', (req: any, res: any) => {
 });
 
 app.post('/options', (req: any, res: any) => {
-  console.log(req.body);
+  // console.log(req.body);
   Object.keys(req.body).forEach((key) => {
-    if((req.body[key]==='on') || (req.body[key]==='true') || (Array.isArray(req.body[key]))) {
+    if((req.body[key] === 'on') || (req.body[key] === 'true') || (Array.isArray(req.body[key]))) {
       userConfig[key] = true;
-    } else if (req.body[key]==='false') {
+    } else if (req.body[key] === 'false') {
       userConfig[key] = false;
     } else {
       userConfig[key] = req.body[key];
     }
   });
+
+  //this is so sketchy that idc about making it sketchier
+  if (userConfig.mute && userConfig.muteDuration > 0) {
+    setTimeout(() => {
+      userConfig.mute = false;
+    }, userConfig.muteDuration*1000);
+  }
+
   console.log(userConfig);
 
   fs.writeFile("./userconfig.json", JSON.stringify(userConfig), (err: any) => {
-    if (err) {
-        console.error(err);
-        return;
-    };
+    if (err) console.log(err);
   });
+  res.send('Saved');
 });
 
 const port: number = 3000;

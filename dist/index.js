@@ -16,10 +16,9 @@ require("dotenv-safe").config();
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const body_parser_1 = __importDefault(require("body-parser"));
-const util = require("util");
-const fs = require('fs');
+const fs_1 = __importDefault(require("fs"));
 let userConfig;
-fs.readFile("userconfig.json", (err, data) => {
+fs_1.default.readFile("userconfig.json", (err, data) => {
     if (err)
         console.log(err);
     userConfig = JSON.parse(data);
@@ -33,8 +32,12 @@ const vision_1 = __importDefault(require("@google-cloud/vision"));
 const client = new vision_1.default.ImageAnnotatorClient();
 // @ts-ignore
 const node_webcam_1 = __importDefault(require("node-webcam"));
+const possibleOptions = [
+    'Box',
+    'Packaged goods',
+    'Boxed packaged goods'
+];
 let currentNumBoxes = 0;
-let muted = false;
 function getNumBoxes(imageData) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
@@ -46,7 +49,7 @@ function getNumBoxes(imageData) {
                 let numBoxes = 0;
                 objects.forEach((object) => {
                     console.log(object.name);
-                    if (object.name == "Box" || object.name == "Packaged goods") {
+                    if (possibleOptions.indexOf(object.name) != -1) {
                         ++numBoxes;
                     }
                 });
@@ -112,7 +115,7 @@ node_webcam_1.default.create({}).list((availableCams) => {
     console.log(cams);
     // update every 5sec
     setInterval(() => {
-        if (!muted) {
+        if (!userConfig.mute) {
             cams[0].capture("capture", (err, base64) => __awaiter(void 0, void 0, void 0, function* () {
                 if (err)
                     console.log(err);
@@ -142,7 +145,7 @@ app.get('/*.*', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, req.url));
 });
 app.post('/options', (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     Object.keys(req.body).forEach((key) => {
         if ((req.body[key] === 'on') || (req.body[key] === 'true') || (Array.isArray(req.body[key]))) {
             userConfig[key] = true;
@@ -154,13 +157,16 @@ app.post('/options', (req, res) => {
             userConfig[key] = req.body[key];
         }
     });
+    //this is so sketchy that idc about making it sketchier
+    if (userConfig.muteDuration > 0) {
+        setTimeout(() => {
+            userConfig.mute = false;
+        }, userConfig.muteDuration * 1000);
+    }
     console.log(userConfig);
-    fs.writeFile("./userconfig.json", JSON.stringify(userConfig), (err) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        ;
+    fs_1.default.writeFile("./userconfig.json", JSON.stringify(userConfig), (err) => {
+        if (err)
+            console.log(err);
     });
     res.send('Saved');
 });
