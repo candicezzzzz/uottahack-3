@@ -4,10 +4,10 @@ import express from "express";
 import path from "path";
 import bodyParser from "body-parser";
 
-// import * as admin from "firebase-admin";
-// admin.initializeApp({
-//   credential: admin.credential.cert("./uOttoFirebaseKey.json")
-// });
+import * as admin from "firebase-admin";
+admin.initializeApp({
+  credential: admin.credential.cert("./uOttoFirebaseKey.json")
+});
 
 import fs from "fs";
 
@@ -42,17 +42,17 @@ const possibleOptions: Array<String> = [
 ];
 let currentNumBoxes: number = 0;
 
-// function sendNotification(title: string, body: string) {
-//   admin.messaging().send({
-//     notification: {
-//       title: title,
-//       body: body
-//     },
-//     token: process.env.KEVINS_PHONE_TOKEN_LOL_TEST!
-//   }).then((response: any) => {
-//     console.log(response);
-//   }).catch(console.log);
-// }
+function sendNotification(title: string, body: string) {
+  admin.messaging().send({
+    notification: {
+      title: title,
+      body: body
+    },
+    token: process.env.KEVINS_PHONE_TOKEN_LOL_TEST!
+  }).then((response: any) => {
+    console.log(response);
+  }).catch(console.log);
+}
 
 async function getNumBoxes(imageData: string): Promise<number> {
   return new Promise(async (resolve, reject) => {
@@ -114,9 +114,9 @@ function playSound(filePath: string): void {
 let cams: Array<any> = [];
 
 function onArrive(numPackage: number) {
-  // if (userConfig.notification) {
-  //   sendNotification("Package Arrived", userConfig.notifArrive);
-  // }
+  if (userConfig.notification) {
+    sendNotification("Package Arrived", userConfig.notifArrive);
+  }
   console.log(`Packages: ${numPackage}`);
 
   if (userConfig["soundfx"] && userConfig["goodSoundPath"] != "") {
@@ -145,9 +145,9 @@ function onTaken(numPackage: number) {
     playSound(userConfig["badSoundPath"]);
   }
   
-  // if (userConfig.notification) {
-  //   sendNotification("Package Taken", userConfig.notifStolen);
-  // }
+  if (userConfig.notification) {
+    sendNotification("Package Taken", userConfig.notifStolen);
+  }
   console.log(`Packages taken: ${numPackage}`);
 }
 
