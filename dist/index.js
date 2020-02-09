@@ -27,8 +27,8 @@ fs_1.default.readFile("userconfig.json", (err, data) => {
 // const userConfig = JSON.parse(fs.readFile('userconfig.json'));
 // process the forms passed
 const formidable = require("formidable");
-// used for music
-// const neko = require('sound-play');
+// used for music (mplayer must be a system environment variable)
+const neko = require("play-sound")({ player: "mplayer" });
 const app = express_1.default();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
@@ -97,6 +97,13 @@ function getPackageDifference(imageData) {
 //   }
 // }
 // test();
+function playSound(filePath) {
+    neko.play(filePath, (err) => {
+        if (err)
+            console.log(`${err}`);
+    });
+}
+let cams = [];
 function onArrive(numPackage) {
     console.log(`Packages: ${numPackage}`);
 }
@@ -105,16 +112,11 @@ function onTaken(numPackage) {
         if (err)
             console.log(err);
     }));
+    if (userConfig["soundfx"]) {
+        playSound(userConfig["soundPath"]);
+    }
     console.log(`Packages taken: ${numPackage}`);
 }
-// async function playSound(filePath: string) {
-//   try {
-//     await neko.play(filePath);
-//   } catch(error) {
-//     throw error;
-//   }
-// }
-let cams = [];
 node_webcam_1.default.create({}).list((availableCams) => {
     availableCams.forEach((element) => {
         cams.push(node_webcam_1.default.create({
@@ -159,6 +161,8 @@ app.get('/*.*', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, req.url));
 });
 app.post('/options', (req, res) => {
+    if (userConfig["soundfx"])
+        playSound(userConfig["soundPath"]);
     console.log(req.body);
     Object.keys(req.body).forEach(key => {
         userConfig[key] = req.body[key];
@@ -174,6 +178,33 @@ app.post('/options', (req, res) => {
             console.log(err);
     });
     res.send({ message: 'success' });
+});
+app.post('/settings', (req, res) => {
+    let form = new formidable.IncomingForm;
+    form.parse(req);
+    form.on('field', (name, field) => {
+        if ((field === 'on') || (field === 'true')) {
+            userConfig[name] = true;
+        }
+        else if (field === 'false') {
+            userConfig[name] = false;
+        }
+        else {
+            userConfig[name] = field;
+        }
+        console.log(name, field);
+    });
+    form.on('file', (name, file) => {
+        userConfig[name] = file["path"];
+        console.log(name, file);
+    });
+    form.on('error', (err) => {
+        throw err;
+    });
+    form.on('end', () => {
+        res.end();
+    });
+    res.send('Saved');
 });
 const port = 3000;
 app.listen(port, () => {

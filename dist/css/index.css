@@ -81,6 +81,20 @@
   font-size: 25px;
 }
 
+.background-image-1 {
+  padding-top: 50px;
+  height: 600px;
+  background-image: url(../imgs/boxes.png);
+}
+
+.box-design {
+  
+  width: 200px;
+  padding: 30px;
+  border-radius: 1em;
+  background-color: rgba(190,200,209, 0.6);
+}
+
 #mute-options {
   display: none;
 }
