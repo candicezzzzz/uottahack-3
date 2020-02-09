@@ -4,8 +4,13 @@ import express from "express";
 import path from "path";
 import bodyParser from "body-parser";
 
+import * as admin from "firebase-admin";
+admin.initializeApp({
+  credential: admin.credential.cert("./uOttoFirebaseKey.json")
+});
+
 // import util from "util";
-import fs from 'fs';
+import fs from "fs";
 
 let userConfig: any;
 fs.readFile("userconfig.json", (err: any, data: any) => {
@@ -16,14 +21,14 @@ fs.readFile("userconfig.json", (err: any, data: any) => {
 // const userConfig = JSON.parse(fs.readFile('userconfig.json'));
 
 // process the forms passed
-const formidable: any =  require("formidable");
+const formidable: any = require("formidable");
 
 // used for music
 // const neko = require('sound-play');
 
 const app: express.Application = express();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // @ts-ignore
 import vision from "@google-cloud/vision";
@@ -33,12 +38,24 @@ const client: any = new vision.ImageAnnotatorClient();
 import NodeCam from "node-webcam";
 
 const possibleOptions: Array<String> = [
-  'Box', 
-  'Packaged goods', 
-  'Boxed packaged goods',
-  'Shipping box'
+  "Box",
+  "Packaged goods",
+  "Boxed packaged goods",
+  "Shipping box"
 ];
 let currentNumBoxes: number = 0;
+
+function sendNotification(title: string, body: string) {
+  admin.messaging().send({
+    notification: {
+      title: title,
+      body: body
+    },
+    token: process.env.KEVINS_PHONE_TOKEN_LOL_TEST!
+  }).then((response: any) => {
+    console.log(response);
+  }).catch(console.log);
+}
 
 async function getNumBoxes(imageData: string): Promise<number> {
   return new Promise(async (resolve, reject) => {
@@ -48,7 +65,7 @@ async function getNumBoxes(imageData: string): Promise<number> {
       });
       const objects: Array<any> = results.localizedObjectAnnotations;
       let numBoxes = 0;
-      objects.forEach((object) => {
+      objects.forEach(object => {
         console.log(object.name);
         if (possibleOptions.indexOf(object.name) != -1) {
           ++numBoxes;
@@ -75,7 +92,6 @@ async function getPackageDifference(imageData: string): Promise<number> {
   });
 }
 
-
 //testing with local files
 // async function test() {
 //   const dirName = "boxes/";
@@ -87,23 +103,34 @@ async function getPackageDifference(imageData: string): Promise<number> {
 //     } catch (err) {
 //       console.log(err.message);
 //     }
-    
+
 //   }
 // }
 // test();
 
-
 function onArrive(numPackage: number) {
+  if (userConfig.notification) {
+    sendNotification("Package Arrived", userConfig.notifArrive);
+  }
   console.log(`Packages: ${numPackage}`);
 }
 
 function onTaken(numPackage: number) {
-  let date:string = new Date().toLocaleString().replace(/\//g, "_").replace(/ /g, "").replace(/:/g, "-");
-  cams[0].capture(".\\dist\\pictures_taken\\person_" + date + ".jpg",
+  let date: string = new Date()
+    .toLocaleString()
+    .replace(/\//g, "_")
+    .replace(/ /g, "")
+    .replace(/:/g, "-");
+  cams[0].capture(
+    ".\\dist\\pictures_taken\\person_" + date + ".jpg",
     async (err: any, base64: string) => {
       if (err) console.log(err);
-      else console.log('picture captured');
-  });
+      else console.log("picture captured");
+    }
+  );
+  if (userConfig.notification) {
+    sendNotification("Package Taken", userConfig.notifStolen);
+  }
   console.log(`Packages taken: ${numPackage}`);
 }
 
@@ -114,7 +141,6 @@ function onTaken(numPackage: number) {
 //     throw error;
 //   }
 // }
-
 
 let cams: Array<any> = [];
 
@@ -133,45 +159,48 @@ NodeCam.create({}).list((availableCams: Array<any>) => {
         verbose: true
       })
     );
-  });  
+  });
   console.log(cams);
 
   // update every 5sec
-  // setInterval(() => {
-  //   if (!userConfig.mute) {
-  //     cams[1].capture("capture", async (err: any, base64: string) => {
-  //       if (err) console.log(err);
-  //       if (base64) {
-  //         // stupid package adds 23 stupid characters at the front
+  setInterval(() => {
+    if (!userConfig.mute) {
+      cams[1].capture("capture", async (err: any, base64: string) => {
+        if (err) console.log(err);
+        if (base64) {
+          // stupid package adds 23 stupid characters at the front
 
-  //         const numPackageDifference = await getPackageDifference(base64.substring(23));
-  //         if (numPackageDifference > 0) {
-  //           onArrive(numPackageDifference);
-  //         } else if (numPackageDifference < 0) {
-  //           onTaken(-numPackageDifference);
-  //         }
-
-  //       } else {
-  //         console.log("alsdkfjasdg undefined");
-  //       }
-  //     });
-  //   }
-  // }, 5000);
+          const numPackageDifference = await getPackageDifference(
+            base64.substring(23)
+          );
+          if (numPackageDifference > 0) {
+            onArrive(numPackageDifference);
+          } else if (numPackageDifference < 0) {
+            onTaken(-numPackageDifference);
+          }
+        } else {
+          console.log("alsdkfjasdg undefined");
+        }
+      });
+    }
+  }, 5000);
 });
-
-
 
 ////////express stuff
 
-app.get('/', (req: any, res: any) => {
+app.get("/", (req: any, res: any) => {
   res.sendFile(path.join(__dirname, "index.html"));
+});
+
+app.get('/config', (req: any, res: any) => {
+  res.send(userConfig);
 });
 
 app.get('/*.*', (req: any, res: any) => {
   res.sendFile(path.join(__dirname, req.url));
 });
 
-app.post('/options', (req: any, res: any) => {
+app.post("/options", (req: any, res: any) => {
   console.log(req.body);
   Object.keys(req.body).forEach(key => {
     userConfig[key] = req.body[key];
@@ -180,15 +209,17 @@ app.post('/options', (req: any, res: any) => {
   if (userConfig.mute && userConfig.muteDuration > 0) {
     setTimeout(() => {
       userConfig.mute = false;
-    }, userConfig.muteDuration*1000);
+    }, userConfig.muteDuration * 1000);
   }
 
   console.log(userConfig);
 
-  fs.writeFile("./userconfig.json", JSON.stringify(userConfig), (err: any) => {
+  fs.writeFile("./userconfig.json", 
+               JSON.stringify(userConfig, undefined, 2), 
+               (err: any) => {
     if (err) console.log(err);
   });
-  res.send({message: 'success'});
+  res.send({ message: "success" });
 });
 
 app.get("/images", (req:any, res:any) => {
@@ -217,36 +248,20 @@ app.post("/images", (req: any, res: any) => {
   res.send("<html><body><a href='images'>Deleted</a></body></html>");
 });
   
-app.post('/settings', (req: any, res: any) => {
+app.post('/music', (req: any, res: any) => {
   let form: any  = new formidable.IncomingForm;
   form.parse(req);
 
-  form.on('field', (name: any, field: any) => {
-    if((field ==='on') || (field === 'true')) {
-      userConfig[name] = true;
-    } else if (field === 'false') {
-      userConfig[name] = false;
-    } else {
-      userConfig[name] = field;
-    }
 
-    console.log(name, field);
-  });
-
-  form.on('file', (name: any, file: any) => {
+  form.on("file", (name: any, file: any) => {
     userConfig[name] = file["path"];
     console.log(name, file);
   });
-  
-  form.on('error', (err: any) => {
+
+  form.on("error", (err: any) => {
     throw err;
   });
-  
-  form.on('end', () => {
-    res.end();
-  });
-  
-  res.send('Saved');
+  res.send({message: 'success'});
 });
 
 const port: number = 3000;
