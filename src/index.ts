@@ -192,22 +192,29 @@ app.post('/options', (req: any, res: any) => {
 });
 
 app.get("/images", (req:any, res:any) => {
-  let imagesHtml:string = "<!DOCTYPE html><html><head><meta charset='utc-8'><link rel='stylesheet' type='text/css' href='css/images.css'><script src='js/index.js'></script></head><nav class='nav header'><div><nav class='navbar-right'><ul class='nav-options'><li class='nav-option'><a href='index.html'>Home</a></li><li class='nav-option'><a href='about.html'>About</a></li><li class='nav-option'><a href='settings.html'>Settings</a></li><li class='nav-option'><a href='/images'>Images</a></li></ul></nav></div></nav><body><div>";
+  let imagesHtml:string = "<!DOCTYPE html><html><head><meta charset='utc-8'><link rel='stylesheet' type='text/css' href='css/images.css'><script src='js/index.js'></script></head><nav class='nav header'><div><nav class='navbar-right'><ul class='nav-options'><li class='nav-option'><a href='index.html'>Home</a></li><li class='nav-option'><a href='about.html'>About</a></li><li class='nav-option'><a href='settings.html'>Settings</a></li><li class='nav-option'><a href='/images'>Images</a></li></ul></nav></div></nav><body><script>function deleteImg(control, imageId) {fs.unlinkSync(document.getElementById(imageId).src);}</script><div>";
   fs.readdir("./dist/pictures_taken", (err:any, files:string[]) => {
     if (err) console.log(err);
     if (files.length == 0) {
       imagesHtml += "<h1>empty folder</h1>";
     } else {
-      files.forEach((file:string) => {
+      for(let i = 0; i < files.length; i++) {
+        let file:string = files[i];
+        let fileId:string = "imgbutton"+i;
+        let imgId:string = "img"+i;
         file = file.substring(file.lastIndexOf("/"));
-        imagesHtml += "<img src=pictures_taken/" + file + ">";
-      });
+        imagesHtml += "<img src=pictures_taken/" + file + " id=imgId>";
+        imagesHtml += "<div class='center margin-up'><form action='' method='post'><button name='delete' value='"+file+"'>Delete</button></form></div>";
+      }
     }
     imagesHtml += "</body></html>";
-    console.log(imagesHtml);
     res.send(imagesHtml);
   });
-  
+});
+
+app.post("/images", (req: any, res: any) => {
+  fs.unlink(".\\dist\\pictures_taken\\"+req.body["delete"], console.log);
+  res.send("<html><body><a href='images'>Deleted</a></body></html>");
 });
   
 app.post('/settings', (req: any, res: any) => {

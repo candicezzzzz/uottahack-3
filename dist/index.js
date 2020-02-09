@@ -27,8 +27,8 @@ fs_1.default.readFile("userconfig.json", (err, data) => {
 // const userConfig = JSON.parse(fs.readFile('userconfig.json'));
 // process the forms passed
 const formidable = require("formidable");
-// used for music (mplayer must be a system environment variable)
-const neko = require("play-sound")({ player: "mplayer" });
+// used for music
+// const neko = require('sound-play');
 const app = express_1.default();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
@@ -97,13 +97,6 @@ function getPackageDifference(imageData) {
 //   }
 // }
 // test();
-function playSound(filePath) {
-    neko.play(filePath, (err) => {
-        if (err)
-            console.log(`${err}`);
-    });
-}
-let cams = [];
 function onArrive(numPackage) {
     console.log(`Packages: ${numPackage}`);
 }
@@ -115,11 +108,16 @@ function onTaken(numPackage) {
         else
             console.log('picture captured');
     }));
-    if (userConfig["soundfx"]) {
-        playSound(userConfig["soundPath"]);
-    }
     console.log(`Packages taken: ${numPackage}`);
 }
+// async function playSound(filePath: string) {
+//   try {
+//     await neko.play(filePath);
+//   } catch(error) {
+//     throw error;
+//   }
+// }
+let cams = [];
 node_webcam_1.default.create({}).list((availableCams) => {
     availableCams.forEach((element) => {
         cams.push(node_webcam_1.default.create({
@@ -163,8 +161,6 @@ app.get('/*.*', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, req.url));
 });
 app.post('/options', (req, res) => {
-    if (userConfig["soundfx"])
-        playSound(userConfig["soundPath"]);
     console.log(req.body);
     Object.keys(req.body).forEach(key => {
         userConfig[key] = req.body[key];
@@ -182,7 +178,7 @@ app.post('/options', (req, res) => {
     res.send({ message: 'success' });
 });
 app.get("/images", (req, res) => {
-    let imagesHtml = "<!DOCTYPE html><html><head><meta charset='utc-8'><link rel='stylesheet' type='text/css' href='css/images.css'><script src='js/index.js'></script></head><nav class='nav header'><div><nav class='navbar-right'><ul class='nav-options'><li class='nav-option'><a href='index.html'>Home</a></li><li class='nav-option'><a href='about.html'>About</a></li><li class='nav-option'><a href='settings.html'>Settings</a></li><li class='nav-option'><a href='/images'>Images</a></li></ul></nav></div></nav><body><div>";
+    let imagesHtml = "<!DOCTYPE html><html><head><meta charset='utc-8'><link rel='stylesheet' type='text/css' href='css/images.css'><script src='js/index.js'></script></head><nav class='nav header'><div><nav class='navbar-right'><ul class='nav-options'><li class='nav-option'><a href='index.html'>Home</a></li><li class='nav-option'><a href='about.html'>About</a></li><li class='nav-option'><a href='settings.html'>Settings</a></li><li class='nav-option'><a href='/images'>Images</a></li></ul></nav></div></nav><body><script>function deleteImg(control, imageId) {fs.unlinkSync(document.getElementById(imageId).src);}</script><div>";
     fs_1.default.readdir("./dist/pictures_taken", (err, files) => {
         if (err)
             console.log(err);
@@ -190,15 +186,22 @@ app.get("/images", (req, res) => {
             imagesHtml += "<h1>empty folder</h1>";
         }
         else {
-            files.forEach((file) => {
+            for (let i = 0; i < files.length; i++) {
+                let file = files[i];
+                let fileId = "imgbutton" + i;
+                let imgId = "img" + i;
                 file = file.substring(file.lastIndexOf("/"));
-                imagesHtml += "<img src=pictures_taken/" + file + ">";
-            });
+                imagesHtml += "<img src=pictures_taken/" + file + " id=imgId>";
+                imagesHtml += "<div class='center margin-up'><form action='' method='post'><button name='delete' value='" + file + "'>Delete</button></form></div>";
+            }
         }
         imagesHtml += "</body></html>";
-        console.log(imagesHtml);
         res.send(imagesHtml);
     });
+});
+app.post("/images", (req, res) => {
+    fs_1.default.unlink(".\\dist\\pictures_taken\\" + req.body["delete"], console.log);
+    res.send("<html><body><a href='images'>Deleted</a></body></html>");
 });
 app.post('/settings', (req, res) => {
     let form = new formidable.IncomingForm;
