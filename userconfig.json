@@ -1,8 +1,8 @@
 {
   "muteDuration": -1,
   "allowEntrance": false,
-  "goodSoundPath": "C:\\Users\\Owner\\AppData\\Local\\Temp\\upload_b03315e13e884df77ae17dfb761e00c4",
-  "badSoundPath": "C:\\Users\\Owner\\AppData\\Local\\Temp\\upload_08cdc3f34a0fd89e19c2dec997995d2a",
+  "goodSoundPath": "",
+  "badSoundPath": "",
   "takePicture": false,
   "notifArrive": "A package has arrived!",
   "notifStolen": "dear lord the package is being taken what do we do",

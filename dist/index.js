@@ -50,7 +50,8 @@ const possibleOptions = [
     "Box",
     "Packaged goods",
     "Boxed packaged goods",
-    "Shipping box"
+    "Shipping box",
+    "Banana"
 ];
 let currentNumBoxes = 0;
 function sendNotification(title, body) {
@@ -103,20 +104,6 @@ function getPackageDifference(imageData) {
         }));
     });
 }
-//testing with local files
-// async function test() {
-//   const dirName = "boxes/";
-//   const files = await getAll(dirName);
-//   for (let file of files) {
-//     console.log(file + ": ");
-//     try {
-//       console.log(await getNumBoxes(fs.readFileSync(dirName+file)));
-//     } catch (err) {
-//       console.log(err.message);
-//     }
-//   }
-// }
-// test();
 function playSound(filePath) {
     neko.play(filePath, (err) => {
         if (err)
